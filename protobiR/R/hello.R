@@ -58,11 +58,13 @@ protobi.get_titles <- function (PROJECTID, TABLEKEY, APIKEY) {
 #' @keywords protobi
 #' protobi.get_formats()
 protobi.apply_formats <- function(data_df, format_df){
-  data_df$package <- factor(data_df$package, levels = format_df$package$levels, labels=format_df$package$labels)
-  data_df$brand <- factor(data_df$brand, levels = format_df$brand$levels, labels=format_df$brand$labels)
-  data_df$price <- factor(data_df$price, levels = format_df$price$levels, labels=format_df$price$labels)
-  data_df$seal <- factor(data_df$seal, levels = format_df$seal$levels, labels=format_df$seal$labels)
-  data_df$money <- factor(data_df$money, levels = format_df$money$levels, labels=format_df$money$labels)
+  colNames <- colnames(data_df)
+  for (i in 1:length(colNames)) {
+    tempFormat <- format_df[[colNames[i]]]
+    if (!is.null(tempFormat)){
+      data_df[[colNames[i]]] <- factor(data_df[[colNames[i]]], levels = tempFormat$levels, labels=tempFormat$labels)
+    }
+  }
   return(data_df)
 }
 
@@ -76,8 +78,9 @@ protobi.apply_formats <- function(data_df, format_df){
 protobi.apply_titles <- function (data_df, names_df){
   colNames <- colnames(data_df)
   for (i in 1:length(colNames)) {
-    print(i)
-    label(data_df[colNames[i]]) <- names_df[colNames[i]]
+    if (!is.null(names_df[colNames[i]])){
+      label(data_df[colNames[i]]) <- names_df[colNames[i]]
+    }
   }
   return (data_df)
 }
