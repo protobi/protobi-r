@@ -5,6 +5,14 @@ To build the package, clone the repository and issue the command
 
 ```
 R CMD INSTALL --build --preclean protobiR
+
+```
+
+To install this package, in the R command prompt issue the following command
+
+```
+install.packages("PATH_TO_LOCAL_GIT_REPO/protobiR_0.1.0.tgz", repos = NULL, type = .Platform$pkgType)
+
 ```
 
 to create an R dataframe with data, frame and titles, use the following code
