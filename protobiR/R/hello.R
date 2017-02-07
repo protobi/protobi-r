@@ -11,9 +11,9 @@ library (Hmisc)
 #' protobi.get_data()
 protobi.get_data <- function(PROJECTID, TABLEKEY, APIKEY){
   a <- paste("https://app.protobi.com/api/v3/dataset/", PROJECTID , sep = "")
-  a <- paste(a, "/data/main/csv?apiKey=" , sep = "")
+  a <- paste(a, "/data/", TABLEKEY , sep = "")
+  a <- paste(a, "/main/csv?apiKey=" , sep = "")
   a <- paste(a, APIKEY, sep = "")
-  print (a)
   dataDF <- read.csv(a)
   return (dataDF)
 }
@@ -22,11 +22,10 @@ protobi.get_data <- function(PROJECTID, TABLEKEY, APIKEY){
 #'
 #' This function returns an R List representing the Format metadata in Protobi based on the parameters provided.
 #' @param PROJECTID
-#' @param TABLEKEY
 #' @param APIKEY
 #' @keywords protobi
 #' protobi.get_formats()
-protobi.get_formats <- function (PROJECTID, TABLEKEY, APIKEY){
+protobi.get_formats <- function (PROJECTID,  APIKEY){
   a <- paste("https://app.protobi.com/api/v3/dataset/", PROJECTID , sep = "")
   a <- paste(a, "/formats?apiKey=" , sep = "")
   a <- paste(a, APIKEY, sep = "")
@@ -38,11 +37,10 @@ protobi.get_formats <- function (PROJECTID, TABLEKEY, APIKEY){
 #'
 #' This function returns an R List representing the Titles metadata in Protobi based on the parameters provided.
 #' @param PROJECTID
-#' @param TABLEKEY
 #' @param APIKEY
 #' @keywords protobi
 #' protobi.get_titles()
-protobi.get_titles <- function (PROJECTID, TABLEKEY, APIKEY) {
+protobi.get_titles <- function (PROJECTID,  APIKEY) {
   a <- paste("https://app.protobi.com/api/v3/dataset/", PROJECTID , sep = "")
   a <- paste(a, "/titles?apiKey=" , sep = "")
   a <- paste(a, APIKEY, sep = "")
