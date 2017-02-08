@@ -1,5 +1,6 @@
-library(jsonlite)
-library (Hmisc)
+#install.packages("jsonlite", repos="http://cran.r-project.org")
+#library(jsonlite)
+#library (Hmisc)
 
 #' Get Data Function
 #'
@@ -12,10 +13,18 @@ library (Hmisc)
 protobi.get_data <- function(PROJECTID, TABLEKEY, APIKEY){
   a <- paste("https://app.protobi.com/api/v3/dataset/", PROJECTID , sep = "")
   a <- paste(a, "/data/", TABLEKEY , sep = "")
-  a <- paste(a, "/main/csv?apiKey=" , sep = "")
+  a <- paste(a, "/csv?apiKey=" , sep = "")
   a <- paste(a, APIKEY, sep = "")
+cat(a)
   dataDF <- read.csv(a)
   return (dataDF)
+}
+
+protobi.put_data <- function(DATAFRAME, PROJECTID, TABLEKEY, APIKEY, TMPFILE="/tmp/RData.csv", HOST="https://app.protobi.com") {
+  write.csv(DATAFRAME, TMPFILE, na="", row.names=FALSE);
+  uri <- paste(HOST, "/api/v3/dataset/", PROJECTID, "/data/", TABLEKEY, "/csv?apiKey=", APIKEY, sep="");
+  res<-POST(uri, body=list(y=upload_file(TMPFILE,"text/csv")))
+  return(res);
 }
 
 #' Get Formats Function
@@ -26,6 +35,11 @@ protobi.get_data <- function(PROJECTID, TABLEKEY, APIKEY){
 #' @keywords protobi
 #' protobi.get_formats()
 protobi.get_formats <- function (PROJECTID,  APIKEY){
+  if (!requireNamespace("jsonlite", quietly = TRUE)) {
+    stop("jsonlite is needed for this function to work. Please install it.",
+    call. = FALSE)
+  }
+
   a <- paste("https://app.protobi.com/api/v3/dataset/", PROJECTID , sep = "")
   a <- paste(a, "/formats?apiKey=" , sep = "")
   a <- paste(a, APIKEY, sep = "")
@@ -41,6 +55,10 @@ protobi.get_formats <- function (PROJECTID,  APIKEY){
 #' @keywords protobi
 #' protobi.get_titles()
 protobi.get_titles <- function (PROJECTID,  APIKEY) {
+  if (!requireNamespace("jsonlite", quietly = TRUE)) {
+    stop("jsonlite is needed for this function to work. Please install it.",
+    call. = FALSE)
+  }
   a <- paste("https://app.protobi.com/api/v3/dataset/", PROJECTID , sep = "")
   a <- paste(a, "/titles?apiKey=" , sep = "")
   a <- paste(a, APIKEY, sep = "")
