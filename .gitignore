@@ -45,3 +45,5 @@ jspm_packages
 # R
 .Rproj.user
 .Rproj.user/*
+.RData
+.Rhistory
