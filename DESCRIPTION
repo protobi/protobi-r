@@ -1,4 +1,4 @@
-Package: protobiR
+Package: protobi
 Type: Package
 Title: Provides utility to interact with Protobi (Title Case)
 Version: 0.1.0

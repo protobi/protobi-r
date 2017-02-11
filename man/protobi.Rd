@@ -1,5 +1,5 @@
-\name{hello}
-\alias{hello}
+\name{protobi}
+\alias{protobi}
 \title{Hello, World!}
 \usage{
 hello()

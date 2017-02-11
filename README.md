@@ -17,7 +17,7 @@ install.packages("devtools")
 library(devtools)
 
 # load protobi-r
-install_github("protobi/protobi-r", subdir="protobiR")
+install_github("protobi/protobi-r")
 ```
 
 ## Use
@@ -48,14 +48,14 @@ protobi.put_data(data, PROJECTID, TABLEKEY, APIKEY)
 ```
 
 ## Contribute
-To build the package, clone the repository and issue the command:
+To build the package, clone the repository, and from the project root directory issue the command:
 
 ```bash
-R CMD INSTALL --build --preclean protobiR
+R CMD INSTALL --build --preclean .
 ```
 
 To install this package locally, in the R command prompt issue the following command
 
 ```R
-install.packages("PATH_TO_LOCAL_GIT_REPO/protobiR_0.1.0.tgz", repos = NULL, type = .Platform$pkgType)
+install.packages("PATH_TO_LOCAL_GIT_REPO/protobi_0.1.0.tgz", repos = NULL, type = .Platform$pkgType)
 ```

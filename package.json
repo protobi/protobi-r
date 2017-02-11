@@ -1,0 +1,25 @@
+{
+  "name": "protobi-r",
+  "version": "1.0.0",
+  "description": "R library to import/export data between Protobi and R",
+  "main": "R/protobi.R",
+  "scripts": {
+    "build": "R CMD INSTALL --build --preclean ."
+  },
+  "directories": {
+    "man": "man"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/protobi/protobi-r.git"
+  },
+  "author": "Ashwini Kumar",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/protobi/protobi-r/issues"
+  },
+  "homepage": "https://github.com/protobi/protobi-r#readme"
+}
