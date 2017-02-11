@@ -22,7 +22,7 @@ cat(a)
 
 protobi.put_data <- function(DATAFRAME, PROJECTID, TABLEKEY, APIKEY, TMPFILE="/tmp/RData.csv", HOST="https://app.protobi.com") {
   write.csv(DATAFRAME, TMPFILE, na="", row.names=FALSE);
-  uri <- paste(HOST, "/api/v3/dataset/", PROJECTID, "/data/", TABLEKEY, "/csv?apiKey=", APIKEY, sep="");
+  uri <- paste(HOST, "/api/v3/dataset/", PROJECTID, "/data/", TABLEKEY, "apiKey=", APIKEY, sep="");
   res<-POST(uri, body=list(y=upload_file(TMPFILE,"text/csv")))
   return(res);
 }

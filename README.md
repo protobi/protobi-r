@@ -1,5 +1,15 @@
 # protobi-r
-R library to import/export data between R and Protobi
+R library to import/export data between R and Protobi.
+
+Survey datasets are never final, there's always some cleaning, reshaping, 
+additional variables, to create, etc.  
+While you can do many or even all of these in Protobi itself, 
+if R is your preferred language  you may prefer to work in R.
+
+This utility makes it easy to download data from Protobi as a dataframe,
+attach variable labels and value formats as titles and factors, 
+and upload the revised dataframe back to Protobi.
+
 
 ## Install the package
 
@@ -19,6 +29,13 @@ library(devtools)
 # load protobi-r
 install_github("protobi/protobi-r")
 ```
+
+## Parameters
+
+* Get the PROJECTID from your Protobi project url, e.g. `https://app.protobi.com/v3/datasets/5386226fa0caa60200000003`
+* Get the TABLEKEY from the key of your Protobi data table
+* Get the APIKEY from your account profile, https://app.protobi.com/account
+
 
 ## Use
 To download data from a Protobi project to an R dataframe:
