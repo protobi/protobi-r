@@ -16,14 +16,14 @@ protobi.get_data <- function(PROJECTID, TABLEKEY, APIKEY){
   a <- paste(a, "/csv?apiKey=" , sep = "")
   a <- paste(a, APIKEY, sep = "")
 cat(a)
-  dataDF <- read.csv(a)
+  dataDF <- utils::read.csv(a)
   return (dataDF)
 }
 
 protobi.put_data <- function(DATAFRAME, PROJECTID, TABLEKEY, APIKEY, TMPFILE="/tmp/RData.csv", HOST="https://app.protobi.com") {
-  write.csv(DATAFRAME, TMPFILE, na="", row.names=FALSE);
+  utils::write.csv(DATAFRAME, TMPFILE, na="", row.names=FALSE);
   uri <- paste(HOST, "/api/v3/dataset/", PROJECTID, "/data/", TABLEKEY, "apiKey=", APIKEY, sep="");
-  res<-POST(uri, body=list(y=upload_file(TMPFILE,"text/csv")))
+  res <- httr::POST(uri, body=list(y=httr::upload_file(TMPFILE,"text/csv")))
   return(res);
 }
 
@@ -43,7 +43,7 @@ protobi.get_formats <- function (PROJECTID,  APIKEY){
   a <- paste("https://app.protobi.com/api/v3/dataset/", PROJECTID , sep = "")
   a <- paste(a, "/formats?apiKey=" , sep = "")
   a <- paste(a, APIKEY, sep = "")
-  formatsDf <- fromJSON(a)
+  formatsDf <- jsonlite::fromJSON(a)
   return (formatsDf)
 }
 
@@ -62,7 +62,7 @@ protobi.get_titles <- function (PROJECTID,  APIKEY) {
   a <- paste("https://app.protobi.com/api/v3/dataset/", PROJECTID , sep = "")
   a <- paste(a, "/titles?apiKey=" , sep = "")
   a <- paste(a, APIKEY, sep = "")
-  titlesDf <- fromJSON(a)
+  titlesDf <- jsonlite::fromJSON(a)
   return (titlesDf)
 }
 
@@ -95,7 +95,7 @@ protobi.apply_titles <- function (data_df, names_df){
   colNames <- colnames(data_df)
   for (i in 1:length(colNames)) {
     if (!is.null(names_df[colNames[i]])){
-      label(data_df[colNames[i]]) <- names_df[colNames[i]]
+      Hmisc::label(data_df[colNames[i]]) <- names_df[colNames[i]]
     }
   }
   return (data_df)
