@@ -22,7 +22,7 @@ protobi.get_data <- function(projectid, tablekey, apikey){
 protobi.put_data <- function(df, projectid, tablekey, apikey, tmpfile="/tmp/RData.csv", host="https://app.protobi.com") {
   utils::write.csv(df, tmpfile, na="", row.names=FALSE);
   uri <- paste(host, "/api/v3/dataset/", projectid, "/data/", tablekey, "apiKey=", apikey, sep="")
-  httr::POST(uri, body=list(y=httr::upload_file(tmpfile,"text/csv")))
+  httr::POST(uri, body=list(y=httr::upload_file(tmpfile, "text/csv")))
 }
 
 #' Get Formats Function
