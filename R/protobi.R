@@ -10,17 +10,17 @@
 #' @param apikey
 #' @keywords protobi
 #' protobi.get_data()
-protobi.get_data <- function(projectid, tablekey, apikey){
-  a <- paste("https://app.protobi.com/api/v3/dataset/", projectid , sep = "")
-  a <- paste(a, "/data/", tablekey , sep = "")
-  a <- paste(a, "/csv?apiKey=" , sep = "")
-  a <- paste(a, apikey, sep = "")
+protobi.get_data <- function(projectid, tablekey, apikey) {
+  a <- paste("https://app.protobi.com/api/v3/dataset/", projectid, sep="")
+  a <- paste(a, "/data/", tablekey, sep="")
+  a <- paste(a, "/csv?apiKey=", sep="")
+  a <- paste(a, apikey, sep="")
   cat(a)
   utils::read.csv(a)
 }
 
 protobi.put_data <- function(df, projectid, tablekey, apikey, tmpfile="/tmp/RData.csv", host="https://app.protobi.com") {
-  utils::write.csv(df, tmpfile, na="", row.names=FALSE);
+  utils::write.csv(df, tmpfile, na="", row.names=FALSE)
   uri <- paste(host, "/api/v3/dataset/", projectid, "/data/", tablekey, "apiKey=", apikey, sep="")
   httr::POST(uri, body=list(y=httr::upload_file(tmpfile, "text/csv")))
 }
@@ -32,10 +32,10 @@ protobi.put_data <- function(df, projectid, tablekey, apikey, tmpfile="/tmp/RDat
 #' @param apikey
 #' @keywords protobi
 #' protobi.get_formats()
-protobi.get_formats <- function (projectid,  apikey){
-  a <- paste("https://app.protobi.com/api/v3/dataset/", projectid , sep = "")
-  a <- paste(a, "/formats?apiKey=" , sep = "")
-  a <- paste(a, apikey, sep = "")
+protobi.get_formats <- function (projectid, apikey) {
+  a <- paste("https://app.protobi.com/api/v3/dataset/", projectid, sep="")
+  a <- paste(a, "/formats?apiKey=" , sep="")
+  a <- paste(a, apikey, sep="")
   jsonlite::fromJSON(a)
 }
 
@@ -47,9 +47,9 @@ protobi.get_formats <- function (projectid,  apikey){
 #' @keywords protobi
 #' protobi.get_titles()
 protobi.get_titles <- function (projectid,  apikey) {
-  a <- paste("https://app.protobi.com/api/v3/dataset/", projectid , sep = "")
-  a <- paste(a, "/titles?apiKey=" , sep = "")
-  a <- paste(a, apikey, sep = "")
+  a <- paste("https://app.protobi.com/api/v3/dataset/", projectid, sep="")
+  a <- paste(a, "/titles?apiKey=" , sep="")
+  a <- paste(a, apikey, sep="")
   jsonlite::fromJSON(a)
 }
 
@@ -60,12 +60,12 @@ protobi.get_titles <- function (projectid,  apikey) {
 #' @param format_df  #format metadata
 #' @keywords protobi
 #' protobi.get_formats()
-protobi.apply_formats <- function(data_df, format_df){
+protobi.apply_formats <- function(data_df, format_df) {
   colNames <- colnames(data_df)
   for (i in 1:length(colNames)) {
     tempFormat <- format_df[[colNames[i]]]
     if (!is.null(tempFormat)){
-      data_df[[colNames[i]]] <- factor(data_df[[colNames[i]]], levels = tempFormat$levels, labels=tempFormat$labels)
+      data_df[[colNames[i]]] <- factor(data_df[[colNames[i]]], levels=tempFormat$levels, labels=tempFormat$labels)
     }
   }
   data_df
@@ -78,7 +78,7 @@ protobi.apply_formats <- function(data_df, format_df){
 #' @param names_df  #format metadata
 #' @keywords protobi
 #' protobi.get_titles()
-protobi.apply_titles <- function (data_df, names_df){
+protobi.apply_titles <- function (data_df, names_df) {
   colNames <- colnames(data_df)
   for (i in 1:length(colNames)) {
     if (!is.null(names_df[colNames[i]])){
