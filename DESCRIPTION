@@ -5,7 +5,7 @@ Version: 0.1.0
 Author: Ashwini Kumar
 Maintainer: Ashwini Kumar <kumar_ashni@yahoo.com>
 Description: Utilities to get data and metadata from a Protobi project as an R Data Frame,
-apply variable labels as titles, apply value labels as factors, and send a new or revised R data frame to Protobi.
+    apply variable labels as titles, apply value labels as factors, and send a new or revised R data frame to Protobi.
 License: MIT
 Encoding: UTF-8
 LazyData: true
