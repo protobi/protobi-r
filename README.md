@@ -74,5 +74,5 @@ R CMD INSTALL --build --preclean .
 To install this package locally, in the R command prompt issue the following command
 
 ```R
-install.packages("PATH_TO_LOCAL_GIT_REPO/protobi_0.1.0.tgz", repos = NULL, type = .Platform$pkgType)
+devtools::install("PATH_TO_LOCAL_GIT_REPO")
 ```
