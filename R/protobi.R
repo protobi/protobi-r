@@ -5,39 +5,49 @@
 #' Get Data Function
 #'
 #' This function returns an R data frame representing the data in Protobi based on the parameters provided.
-#' @param PROJECTID
-#' @param TABLEKEY
-#' @param APIKEY
+#' @param projectid
+#' @param tablekey
+#' @param apikey
 #' @keywords protobi
 #' protobi.get_data()
-protobi.get_data <- function(PROJECTID, TABLEKEY, APIKEY){
-  a <- paste("https://app.protobi.com/api/v3/dataset/", PROJECTID , sep = "")
-  a <- paste(a, "/data/", TABLEKEY , sep = "")
+protobi.get_data <- function(projectid, tablekey, apikey){
+  a <- paste("https://app.protobi.com/api/v3/dataset/", projectid , sep = "")
+  a <- paste(a, "/data/", tablekey , sep = "")
   a <- paste(a, "/csv?apiKey=" , sep = "")
-  a <- paste(a, APIKEY, sep = "")
+  a <- paste(a, apikey, sep = "")
 cat(a)
   dataDF <- utils::read.csv(a)
   return (dataDF)
 }
 
-protobi.put_data <- function(DATAFRAME, PROJECTID, TABLEKEY, APIKEY, TMPFILE="/tmp/RData.csv", HOST="https://app.protobi.com") {
-  utils::write.csv(DATAFRAME, TMPFILE, na="", row.names=FALSE);
-  uri <- paste(HOST, "/api/v3/dataset/", PROJECTID, "/data/", TABLEKEY, "apiKey=", APIKEY, sep="");
-  res <- httr::POST(uri, body=list(y=httr::upload_file(TMPFILE,"text/csv")))
+protobi.put_data <- function(df, projectid, tablekey, apikey, tmpfile="/tmp/RData.csv", host="https://app.protobi.com") {
+  utils::write.csv(df, tmpfile, na="", row.names=FALSE);
+  uri <- paste(host, "/api/v3/dataset/", projectid, "/data/", tablekey, "apiKey=", apikey, sep="");
+  res <- httr::POST(uri, body=list(y=httr::upload_file(tmpfile,"text/csv")))
   return(res);
 }
 
 #' Get Formats Function
 #'
 #' This function returns an R List representing the Format metadata in Protobi based on the parameters provided.
-#' @param PROJECTID
-#' @param APIKEY
+#' @param projectid
+#' @param apikey
 #' @keywords protobi
 #' protobi.get_formats()
+<<<<<<< HEAD
 protobi.get_formats <- function (PROJECTID,  APIKEY){
   a <- paste("https://app.protobi.com/api/v3/dataset/", PROJECTID , sep = "")
+=======
+protobi.get_formats <- function (projectid,  apikey){
+  if (!requireNamespace("jsonlite", quietly = TRUE)) {
+    stop("jsonlite is needed for this function to work. Please install it.",
+    call. = FALSE)
+  }
+
+  a <- paste("https://app.protobi.com/api/v3/dataset/", projectid , sep = "")
+>>>>>>> 79136b5... Use lowercase argument names
   a <- paste(a, "/formats?apiKey=" , sep = "")
-  a <- paste(a, APIKEY, sep = "")
+  a <- paste(a, apikey, sep = "")
   formatsDf <- jsonlite::fromJSON(a)
   return (formatsDf)
 }
@@ -45,14 +55,14 @@ protobi.get_formats <- function (PROJECTID,  APIKEY){
 #' Get Titles Function
 #'
 #' This function returns an R List representing the Titles metadata in Protobi based on the parameters provided.
-#' @param PROJECTID
-#' @param APIKEY
+#' @param projectid
+#' @param apikey
 #' @keywords protobi
 #' protobi.get_titles()
-protobi.get_titles <- function (PROJECTID,  APIKEY) {
-  a <- paste("https://app.protobi.com/api/v3/dataset/", PROJECTID , sep = "")
+protobi.get_titles <- function (projectid,  apikey) {
+  a <- paste("https://app.protobi.com/api/v3/dataset/", projectid , sep = "")
   a <- paste(a, "/titles?apiKey=" , sep = "")
-  a <- paste(a, APIKEY, sep = "")
+  a <- paste(a, apikey, sep = "")
   titlesDf <- jsonlite::fromJSON(a)
   return (titlesDf)
 }
