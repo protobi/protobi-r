@@ -19,6 +19,17 @@ protobi.get_data <- function(projectid, tablekey, apikey) {
   utils::read.csv(a)
 }
 
+#' Upload Data Function
+#'
+#' This function uploads data.frame content to Protobi
+#'
+#' @param df
+#' @param projectid
+#' @param tablekey
+#' @param apikey
+#' @param tmpfile
+#' @param host
+#' @return httr response object
 protobi.put_data <- function(df, projectid, tablekey, apikey, tmpfile="/tmp/RData.csv", host="https://app.protobi.com") {
   utils::write.csv(df, tmpfile, na="", row.names=FALSE)
   uri <- paste(host, "/api/v3/dataset/", projectid, "/data/", tablekey, "apiKey=", apikey, sep="")
