@@ -35,11 +35,6 @@ protobi.put_data <- function(DATAFRAME, PROJECTID, TABLEKEY, APIKEY, TMPFILE="/t
 #' @keywords protobi
 #' protobi.get_formats()
 protobi.get_formats <- function (PROJECTID,  APIKEY){
-  if (!requireNamespace("jsonlite", quietly = TRUE)) {
-    stop("jsonlite is needed for this function to work. Please install it.",
-    call. = FALSE)
-  }
-
   a <- paste("https://app.protobi.com/api/v3/dataset/", PROJECTID , sep = "")
   a <- paste(a, "/formats?apiKey=" , sep = "")
   a <- paste(a, APIKEY, sep = "")
@@ -55,10 +50,6 @@ protobi.get_formats <- function (PROJECTID,  APIKEY){
 #' @keywords protobi
 #' protobi.get_titles()
 protobi.get_titles <- function (PROJECTID,  APIKEY) {
-  if (!requireNamespace("jsonlite", quietly = TRUE)) {
-    stop("jsonlite is needed for this function to work. Please install it.",
-    call. = FALSE)
-  }
   a <- paste("https://app.protobi.com/api/v3/dataset/", PROJECTID , sep = "")
   a <- paste(a, "/titles?apiKey=" , sep = "")
   a <- paste(a, APIKEY, sep = "")
