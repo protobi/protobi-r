@@ -13,3 +13,4 @@ Imports:
   Hmisc,
   httr,
   jsonlite
+RoxygenNote: 6.1.1
