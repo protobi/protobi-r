@@ -14,3 +14,8 @@ Imports:
   httr,
   jsonlite
 RoxygenNote: 6.1.1
+Suggests: 
+    htmltools,
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr
