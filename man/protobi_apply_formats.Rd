@@ -4,15 +4,15 @@
 \alias{protobi_apply_formats}
 \title{Apply Formats Function}
 \usage{
-protobi_apply_formats(data_df, format_df)
+protobi_apply_formats(df, formats)
 }
 \arguments{
-\item{data_df}{A dataframe.}
+\item{df}{A data.frame.}
 
-\item{format_df}{A format metadata.}
+\item{formats}{A list with format metadata as returned by protobi_get_formats.}
 }
 \value{
-The data_df with levels adjusted according to format_df.
+The df with levels adjusted according to formats.
 }
 \description{
 Given the data and format, this function replaces the values in the dataframe column with the format metadata values.

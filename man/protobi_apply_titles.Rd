@@ -4,17 +4,17 @@
 \alias{protobi_apply_titles}
 \title{Apply Titles Function}
 \usage{
-protobi_apply_titles(data_df, names_df)
+protobi_apply_titles(df, titles)
 }
 \arguments{
-\item{data_df}{A data.frame.}
+\item{df}{A data.frame.}
 
-\item{names_df}{A format metadata.}
+\item{titles}{A list with title metadata as returned from protobi_get_titles}
 }
 \value{
-data_df with metadata attached.
+df with metadata attached.
 }
 \description{
-Given the data and format, this function assigns the tile (label) metadata to the R dataframe columns.
+Given the data and titles, this function assigns the tile (label) metadata to the R dataframe columns.
 }
 \keyword{protobi}

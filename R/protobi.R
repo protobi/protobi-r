@@ -72,37 +72,37 @@ protobi_get_titles <- function(projectid,  apikey) {
 #'
 #' Given the data and format, this function replaces the values in the dataframe column with the format metadata values.
 #'
-#' @param data_df A dataframe.
-#' @param format_df A format metadata.
-#' @return The data_df with levels adjusted according to format_df.
+#' @param df A data.frame.
+#' @param formats A list with format metadata as returned by protobi_get_formats.
+#' @return The df with levels adjusted according to formats.
 #' @keywords protobi
 #' @export
-protobi_apply_formats <- function(data_df, format_df) {
-  colNames <- colnames(data_df)
+protobi_apply_formats <- function(df, formats) {
+  colNames <- colnames(df)
   for (i in 1:length(colNames)) {
-    tempFormat <- format_df[[colNames[i]]]
+    tempFormat <- formats[[colNames[i]]]
     if (!is.null(tempFormat)){
-      data_df[[colNames[i]]] <- factor(data_df[[colNames[i]]], levels=tempFormat$levels, labels=tempFormat$labels)
+      df[[colNames[i]]] <- factor(df[[colNames[i]]], levels=tempFormat$levels, labels=tempFormat$labels)
     }
   }
-  data_df
+  df
 }
 
 #' Apply Titles Function
 #'
-#' Given the data and format, this function assigns the tile (label) metadata to the R dataframe columns.
+#' Given the data and titles, this function assigns the tile (label) metadata to the R dataframe columns.
 #'
-#' @param data_df A data.frame.
-#' @param names_df A format metadata.
-#' @return data_df with metadata attached.
+#' @param df A data.frame.
+#' @param titles A list with title metadata as returned from protobi_get_titles
+#' @return df with metadata attached.
 #' @keywords protobi
 #' @export
-protobi_apply_titles <- function(data_df, names_df) {
-  colNames <- colnames(data_df)
+protobi_apply_titles <- function(df, titles) {
+  colNames <- colnames(df)
   for (i in 1:length(colNames)) {
-    if (!is.null(names_df[[colNames[i]]])) {
-      Hmisc::label(data_df[colNames[i]]) <- names_df[colNames[i]]
+    if (!is.null(titles[[colNames[i]]])) {
+      Hmisc::label(df[colNames[i]]) <- titles[colNames[i]]
     }
   }
-  data_df
+  df
 }
