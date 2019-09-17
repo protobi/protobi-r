@@ -1,7 +1,3 @@
-#install.packages("jsonlite", repos="http://cran.r-project.org")
-#library(jsonlite)
-#library (Hmisc)
-
 #' Get Data Function
 #'
 #' This function returns an R data frame representing the data in Protobi based on the parameters provided.
