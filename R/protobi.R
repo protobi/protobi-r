@@ -102,11 +102,18 @@ protobi_apply_formats <- function(df, formats) {
 #' @keywords protobi
 #' @export
 protobi_apply_titles <- function(df, titles) {
-  colNames <- colnames(df)
-  for (i in 1:length(colNames)) {
-    if (!is.null(titles[[colNames[i]]])) {
-      Hmisc::label(df[colNames[i]]) <- titles[colNames[i]]
-    }
-  }
+  cols_to_label <- intersect(
+    # excluding null entries i.e. {"col": null}
+    # and empty objects i.e {"col": {}}
+    # This is defensive approach, and might not be necessary
+    names(titles)[lengths(titles) != 0],
+    colnames(df)
+  )
+
+  df[cols_to_label] <- lapply(cols_to_label, function(col) {
+    col_data <- df[[col]]
+    Hmisc::label(col_data) <- titles[[col]]
+    col_data
+  })
   df
 }
