@@ -13,21 +13,12 @@ and upload the revised dataframe back to Protobi.
 
 ## Install the package
 
-You can install the protobi library directly from GitHub using `devtools`.
+You can install the protobi library directly from GitHub using [`devtools`](https://github.com/r-lib/devtools).
 In the R command prompt issue the following command:
 ```R
-# load dependencies
-install.packages("HMisc", repos="http://cran.r-project.org")
-install.packages("jsonlite", repos="http://cran.r-project.org")
-library(HMisc)
-library(jasonlite)
-
-# load github installer
-install.packages("devtools")  
-library(devtools)
-
-# load protobi-r
-install_github("protobi/protobi-r")
+# Install devtools, if not already installed
+# install.packages("devtools")
+devtools::install_github("tidyverse/dplyr")
 ```
 
 ## Parameters
