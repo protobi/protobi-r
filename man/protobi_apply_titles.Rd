@@ -18,4 +18,3 @@ data_df with metadata attached.
 Given the data and format, this function assigns the tile (label) metadata to the R dataframe columns.
 }
 \keyword{protobi}
-\keyword{protobi_get_titles()}

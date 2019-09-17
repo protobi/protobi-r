@@ -18,4 +18,3 @@ A list representing format metadata.
 This function returns an R List representing the Format metadata in Protobi based on the parameters provided.
 }
 \keyword{protobi}
-\keyword{protobi_get_formats()}

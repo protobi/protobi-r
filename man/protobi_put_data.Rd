@@ -21,7 +21,7 @@ protobi_put_data(df, projectid, tablekey, apikey,
 \item{host}{A character.}
 }
 \value{
-An httr response object
+An httr response objec
 }
 \description{
 This function uploads data.frame content to Protobi

@@ -18,4 +18,3 @@ The data_df with levels adjusted according to format_df.
 Given the data and format, this function replaces the values in the dataframe column with the format metadata values.
 }
 \keyword{protobi}
-\keyword{protobi_get_formats()}

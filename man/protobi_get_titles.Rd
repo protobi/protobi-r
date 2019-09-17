@@ -18,4 +18,3 @@ A list representing titles metadata
 This function returns an R List representing the Titles metadata in Protobi based on the parameters provided.
 }
 \keyword{protobi}
-\keyword{protobi_get_titles()}

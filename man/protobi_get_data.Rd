@@ -17,4 +17,3 @@ protobi_get_data(projectid, tablekey, apikey)
 This function returns an R data frame representing the data in Protobi based on the parameters provided.
 }
 \keyword{protobi}
-\keyword{protobi_get_data()}
