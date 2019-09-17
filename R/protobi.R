@@ -42,7 +42,7 @@ protobi.put_data <- function(df, projectid, tablekey, apikey, tmpfile="/tmp/RDat
 #' @return A list representing format metadata.
 #' @keywords protobi
 #' protobi.get_formats()
-protobi.get_formats <- function (projectid, apikey) {
+protobi.get_formats <- function(projectid, apikey) {
   uri <- paste0(
       "https://app.protobi.com/api/v3/dataset/", projectid,
       "/formats?apiKey=", apikey
@@ -59,11 +59,12 @@ protobi.get_formats <- function (projectid, apikey) {
 #' @return A list representing titles metadata
 #' @keywords protobi
 #' protobi.get_titles()
-protobi.get_titles <- function (projectid,  apikey) {
-  a <- paste("https://app.protobi.com/api/v3/dataset/", projectid, sep="")
-  a <- paste(a, "/titles?apiKey=" , sep="")
-  a <- paste(a, apikey, sep="")
-  jsonlite::fromJSON(a)
+protobi.get_titles <- function(projectid,  apikey) {
+  uri <- paste0(
+    "https://app.protobi.com/api/v3/dataset/", projectid,
+    "/titles?apiKey=", apikey
+  )
+  jsonlite::fromJSON(uri)
 }
 
 #' Apply Formats Function
@@ -95,7 +96,7 @@ protobi.apply_formats <- function(data_df, format_df) {
 #' @return data_df with metadata attached.
 #' @keywords protobi
 #' protobi.get_titles()
-protobi.apply_titles <- function (data_df, names_df) {
+protobi.apply_titles <- function(data_df, names_df) {
   colNames <- colnames(data_df)
   for (i in 1:length(colNames)) {
     if (!is.null(names_df[colNames[i]])){
