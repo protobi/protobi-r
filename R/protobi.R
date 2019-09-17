@@ -6,8 +6,8 @@
 #' @param tablekey A character. The key of your Protobi data table.
 #' @param apikey A character. The APIKEY from your account profile, https://app.protobi.com/account.
 #' @keywords protobi
-#' protobi.get_data()
-protobi.get_data <- function(projectid, tablekey, apikey) {
+#' protobi_get_data()
+protobi_get_data <- function(projectid, tablekey, apikey) {
   uri <- paste0(
     "https://app.protobi.com/api/v3/dataset/", projectid, "/data/", tablekey,
     "/csv?apiKey=", apikey
@@ -27,7 +27,7 @@ protobi.get_data <- function(projectid, tablekey, apikey) {
 #' @param tmpfile A character.
 #' @param host A character.
 #' @return An httr response object
-protobi.put_data <- function(df, projectid, tablekey, apikey, tmpfile="/tmp/RData.csv", host="https://app.protobi.com") {
+protobi_put_data <- function(df, projectid, tablekey, apikey, tmpfile="/tmp/RData.csv", host="https://app.protobi.com") {
   utils::write.csv(df, tmpfile, na="", row.names=FALSE)
   uri <- paste(host, "/api/v3/dataset/", projectid, "/data/", tablekey, "apiKey=", apikey, sep="")
   httr::POST(uri, body=list(y=httr::upload_file(tmpfile, "text/csv")))
@@ -41,8 +41,8 @@ protobi.put_data <- function(df, projectid, tablekey, apikey, tmpfile="/tmp/RDat
 #' @param apikey A character. e APIKEY from your account profile, https://app.protobi.com/account.
 #' @return A list representing format metadata.
 #' @keywords protobi
-#' protobi.get_formats()
-protobi.get_formats <- function(projectid, apikey) {
+#' protobi_get_formats()
+protobi_get_formats <- function(projectid, apikey) {
   uri <- paste0(
       "https://app.protobi.com/api/v3/dataset/", projectid,
       "/formats?apiKey=", apikey
@@ -58,8 +58,8 @@ protobi.get_formats <- function(projectid, apikey) {
 #' @param apikey A character. e APIKEY from your account profile, https://app.protobi.com/account.
 #' @return A list representing titles metadata
 #' @keywords protobi
-#' protobi.get_titles()
-protobi.get_titles <- function(projectid,  apikey) {
+#' protobi_get_titles()
+protobi_get_titles <- function(projectid,  apikey) {
   uri <- paste0(
     "https://app.protobi.com/api/v3/dataset/", projectid,
     "/titles?apiKey=", apikey
@@ -75,8 +75,8 @@ protobi.get_titles <- function(projectid,  apikey) {
 #' @param format_df A format metadata.
 #' @return The data_df with levels adjusted according to format_df.
 #' @keywords protobi
-#' protobi.get_formats()
-protobi.apply_formats <- function(data_df, format_df) {
+#' protobi_get_formats()
+protobi_apply_formats <- function(data_df, format_df) {
   colNames <- colnames(data_df)
   for (i in 1:length(colNames)) {
     tempFormat <- format_df[[colNames[i]]]
@@ -95,8 +95,8 @@ protobi.apply_formats <- function(data_df, format_df) {
 #' @param names_df A format metadata.
 #' @return data_df with metadata attached.
 #' @keywords protobi
-#' protobi.get_titles()
-protobi.apply_titles <- function(data_df, names_df) {
+#' protobi_get_titles()
+protobi_apply_titles <- function(data_df, names_df) {
   colNames <- colnames(data_df)
   for (i in 1:length(colNames)) {
     if (!is.null(names_df[colNames[i]])){

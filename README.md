@@ -31,28 +31,28 @@ devtools::install_github("tidyverse/dplyr")
 ## Use
 To download data from a Protobi project to an R dataframe:
 ```R
-data <- protobi.get_data(PROJECTID, TABLEKEY, APIKEY)
+data <- protobi_get_data(PROJECTID, TABLEKEY, APIKEY)
 ```
 
 To download the variable titles and value formats:
 ```R
-titles <- protobi.get_titles(PROJECTID, APIKEY)
-format <- protobi.get_formats(PROJECTID, APIKEY)
+titles <- protobi_get_titles(PROJECTID, APIKEY)
+format <- protobi_get_formats(PROJECTID, APIKEY)
 ```
 
 To add the variable titles to the R dataframe:
 ```R
-data_titles <- protobi.apply_formats (data, format)
+data_titles <- protobi_apply_formats (data, format)
 ```
 
 To apply the value formats as factors:
 ```R
-data_format <- protobi.apply_titles (data_titles,  titles)
+data_format <- protobi_apply_titles (data_titles,  titles)
 ```
 
 To upload a dataframe to a Protobi project:
 ```R
-protobi.put_data(data, PROJECTID, TABLEKEY, APIKEY)
+protobi_put_data(data, PROJECTID, TABLEKEY, APIKEY)
 ```
 
 ## Contribute
