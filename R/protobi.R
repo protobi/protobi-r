@@ -1,9 +1,10 @@
 #' Get Data Function
 #'
 #' This function returns an R data frame representing the data in Protobi based on the parameters provided.
-#' @param projectid
-#' @param tablekey
-#' @param apikey
+#'
+#' @param projectid A character. Protobi project identifier.
+#' @param tablekey A character. The key of your Protobi data table.
+#' @param apikey A character. The APIKEY from your account profile, https://app.protobi.com/account.
 #' @keywords protobi
 #' protobi.get_data()
 protobi.get_data <- function(projectid, tablekey, apikey) {
@@ -19,13 +20,13 @@ protobi.get_data <- function(projectid, tablekey, apikey) {
 #'
 #' This function uploads data.frame content to Protobi
 #'
-#' @param df
-#' @param projectid
-#' @param tablekey
-#' @param apikey
-#' @param tmpfile
-#' @param host
-#' @return httr response object
+#' @param df A data.frame to uploaded to Protobi.
+#' @param projectid A character. Protobi project identifier.
+#' @param tablekey A character. The key of your Protobi data table.
+#' @param apikey A character. The APIKEY from your account profile, https://app.protobi.com/account.
+#' @param tmpfile A character.
+#' @param host A character.
+#' @return An httr response object
 protobi.put_data <- function(df, projectid, tablekey, apikey, tmpfile="/tmp/RData.csv", host="https://app.protobi.com") {
   utils::write.csv(df, tmpfile, na="", row.names=FALSE)
   uri <- paste(host, "/api/v3/dataset/", projectid, "/data/", tablekey, "apiKey=", apikey, sep="")
@@ -35,8 +36,10 @@ protobi.put_data <- function(df, projectid, tablekey, apikey, tmpfile="/tmp/RDat
 #' Get Formats Function
 #'
 #' This function returns an R List representing the Format metadata in Protobi based on the parameters provided.
-#' @param projectid
-#' @param apikey
+#'
+#' @param projectid A character. Protobi project identifier.
+#' @param apikey A character. e APIKEY from your account profile, https://app.protobi.com/account.
+#' @return A list representing format metadata.
 #' @keywords protobi
 #' protobi.get_formats()
 protobi.get_formats <- function (projectid, apikey) {
@@ -49,8 +52,10 @@ protobi.get_formats <- function (projectid, apikey) {
 #' Get Titles Function
 #'
 #' This function returns an R List representing the Titles metadata in Protobi based on the parameters provided.
-#' @param projectid
-#' @param apikey
+#'
+#' @param projectid A character. Protobi project identifier.
+#' @param apikey A character. e APIKEY from your account profile, https://app.protobi.com/account.
+#' @return A list representing titles metadata
 #' @keywords protobi
 #' protobi.get_titles()
 protobi.get_titles <- function (projectid,  apikey) {
@@ -62,9 +67,11 @@ protobi.get_titles <- function (projectid,  apikey) {
 
 #' Apply Formats Function
 #'
-#' Given the data and format, this function replaces the values in the dataframe column with the format metada values.
-#' @param data_df  #R dataframe
-#' @param format_df  #format metadata
+#' Given the data and format, this function replaces the values in the dataframe column with the format metadata values.
+#'
+#' @param data_df A dataframe.
+#' @param format_df A format metadata.
+#' @return The data_df with levels adjusted according to format_df.
 #' @keywords protobi
 #' protobi.get_formats()
 protobi.apply_formats <- function(data_df, format_df) {
@@ -81,8 +88,10 @@ protobi.apply_formats <- function(data_df, format_df) {
 #' Apply Titles Function
 #'
 #' Given the data and format, this function assigns the tile (label) metadata to the R dataframe columns.
-#' @param data_df  #R dataframe
-#' @param names_df  #format metadata
+#'
+#' @param data_df A data.frame.
+#' @param names_df A format metadata.
+#' @return data_df with metadata attached.
 #' @keywords protobi
 #' protobi.get_titles()
 protobi.apply_titles <- function (data_df, names_df) {

@@ -6,6 +6,14 @@
 \usage{
 protobi.get_formats(projectid, apikey)
 }
+\arguments{
+\item{projectid}{A character. Protobi project identifier.}
+
+\item{apikey}{A character. e APIKEY from your account profile, https://app.protobi.com/account.}
+}
+\value{
+A list representing format metadata.
+}
 \description{
 This function returns an R List representing the Format metadata in Protobi based on the parameters provided.
 }

@@ -7,9 +7,12 @@
 protobi.apply_titles(data_df, names_df)
 }
 \arguments{
-\item{data_df}{#R dataframe}
+\item{data_df}{A data.frame.}
 
-\item{names_df}{#format metadata}
+\item{names_df}{A format metadata.}
+}
+\value{
+data_df with metadata attached.
 }
 \description{
 Given the data and format, this function assigns the tile (label) metadata to the R dataframe columns.

@@ -7,12 +7,15 @@
 protobi.apply_formats(data_df, format_df)
 }
 \arguments{
-\item{data_df}{#R dataframe}
+\item{data_df}{A dataframe.}
 
-\item{format_df}{#format metadata}
+\item{format_df}{A format metadata.}
+}
+\value{
+The data_df with levels adjusted according to format_df.
 }
 \description{
-Given the data and format, this function replaces the values in the dataframe column with the format metada values.
+Given the data and format, this function replaces the values in the dataframe column with the format metadata values.
 }
 \keyword{protobi}
 \keyword{protobi.get_formats()}

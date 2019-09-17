@@ -6,6 +6,13 @@
 \usage{
 protobi.get_data(projectid, tablekey, apikey)
 }
+\arguments{
+\item{projectid}{A character. Protobi project identifier.}
+
+\item{tablekey}{A character. The key of your Protobi data table.}
+
+\item{apikey}{A character. The APIKEY from your account profile, https://app.protobi.com/account.}
+}
 \description{
 This function returns an R data frame representing the data in Protobi based on the parameters provided.
 }

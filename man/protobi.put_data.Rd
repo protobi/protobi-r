@@ -7,8 +7,21 @@
 protobi.put_data(df, projectid, tablekey, apikey,
   tmpfile = "/tmp/RData.csv", host = "https://app.protobi.com")
 }
+\arguments{
+\item{df}{A data.frame to uploaded to Protobi.}
+
+\item{projectid}{A character. Protobi project identifier.}
+
+\item{tablekey}{A character. The key of your Protobi data table.}
+
+\item{apikey}{A character. The APIKEY from your account profile, https://app.protobi.com/account.}
+
+\item{tmpfile}{A character.}
+
+\item{host}{A character.}
+}
 \value{
-httr response object
+An httr response object
 }
 \description{
 This function uploads data.frame content to Protobi
