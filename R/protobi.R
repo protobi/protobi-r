@@ -77,13 +77,18 @@ protobi_get_titles <- function(projectid,  apikey) {
 #' @keywords protobi
 #' @export
 protobi_apply_formats <- function(df, formats) {
-  colNames <- colnames(df)
-  for (i in 1:length(colNames)) {
-    tempFormat <- formats[[colNames[i]]]
-    if (!is.null(tempFormat)){
-      df[[colNames[i]]] <- factor(df[[colNames[i]]], levels=tempFormat$levels, labels=tempFormat$labels)
-    }
-  }
+  # Get intersection of names of format object and data
+  cols_to_format <- intersect(
+    # excluding null entries i.e. {"col": null}
+    # and empty objects i.e {"col": {}}
+    # This is defensive approach, and might not be necessary
+    names(formats)[lengths(formats) != 0],
+    colnames(df)
+  )
+  df[cols_to_format] <- lapply(cols_to_format, function(col) {
+    fmt <- formats[[col]]
+    factor(df[[col]], levels=fmt$levels, labels=fmt$labels)
+  })
   df
 }
 
