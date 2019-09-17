@@ -43,10 +43,11 @@ protobi.put_data <- function(df, projectid, tablekey, apikey, tmpfile="/tmp/RDat
 #' @keywords protobi
 #' protobi.get_formats()
 protobi.get_formats <- function (projectid, apikey) {
-  a <- paste("https://app.protobi.com/api/v3/dataset/", projectid, sep="")
-  a <- paste(a, "/formats?apiKey=" , sep="")
-  a <- paste(a, apikey, sep="")
-  jsonlite::fromJSON(a)
+  uri <- paste0(
+      "https://app.protobi.com/api/v3/dataset/", projectid,
+      "/formats?apiKey=", apikey
+  )
+  jsonlite::fromJSON(uri)
 }
 
 #' Get Titles Function
