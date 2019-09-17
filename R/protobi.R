@@ -12,7 +12,6 @@ protobi_get_data <- function(projectid, tablekey, apikey) {
     "https://app.protobi.com/api/v3/dataset/", projectid, "/data/", tablekey,
     "/csv?apiKey=", apikey
   )
-  cat(uri)
   utils::read.csv(uri)
 }
 
