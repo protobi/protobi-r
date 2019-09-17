@@ -100,7 +100,7 @@ protobi_apply_formats <- function(data_df, format_df) {
 protobi_apply_titles <- function(data_df, names_df) {
   colNames <- colnames(data_df)
   for (i in 1:length(colNames)) {
-    if (!is.null(names_df[colNames[i]])){
+    if (!is.null(names_df[[colNames[i]]])) {
       Hmisc::label(data_df[colNames[i]]) <- names_df[colNames[i]]
     }
   }
