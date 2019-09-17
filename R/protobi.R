@@ -11,12 +11,12 @@
 #' @keywords protobi
 #' protobi.get_data()
 protobi.get_data <- function(projectid, tablekey, apikey) {
-  a <- paste("https://app.protobi.com/api/v3/dataset/", projectid, sep="")
-  a <- paste(a, "/data/", tablekey, sep="")
-  a <- paste(a, "/csv?apiKey=", sep="")
-  a <- paste(a, apikey, sep="")
-  cat(a)
-  utils::read.csv(a)
+  uri <- paste0(
+    "https://app.protobi.com/api/v3/dataset/", projectid, "/data/", tablekey,
+    "/csv?apiKey=", apikey
+  )
+  cat(uri)
+  utils::read.csv(uri)
 }
 
 #' Upload Data Function
