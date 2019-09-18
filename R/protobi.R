@@ -1,102 +1,107 @@
-#install.packages("jsonlite", repos="http://cran.r-project.org")
-#library(jsonlite)
-#library (Hmisc)
-
 #' Get Data Function
 #'
 #' This function returns an R data frame representing the data in Protobi based on the parameters provided.
-#' @param PROJECTID
-#' @param TABLEKEY
-#' @param APIKEY
+#'
+#' @param projectid A character. Protobi project identifier.
+#' @param tablekey A character. The key of your Protobi data table.
+#' @param apikey A character. The APIKEY from your account profile, https://app.protobi.com/account.
 #' @keywords protobi
-#' protobi.get_data()
-protobi.get_data <- function(PROJECTID, TABLEKEY, APIKEY){
-  a <- paste("https://app.protobi.com/api/v3/dataset/", PROJECTID , sep = "")
-  a <- paste(a, "/data/", TABLEKEY , sep = "")
-  a <- paste(a, "/csv?apiKey=" , sep = "")
-  a <- paste(a, APIKEY, sep = "")
-cat(a)
-  dataDF <- read.csv(a)
-  return (dataDF)
+#' @export
+protobi_get_data <- function(projectid, tablekey, apikey) {
+  uri <- paste0(
+    "https://app.protobi.com/api/v3/dataset/", projectid, "/data/", tablekey,
+    "/csv?apiKey=", apikey
+  )
+  utils::read.csv(uri)
 }
 
-protobi.put_data <- function(DATAFRAME, PROJECTID, TABLEKEY, APIKEY, TMPFILE="/tmp/RData.csv", HOST="https://app.protobi.com") {
-  write.csv(DATAFRAME, TMPFILE, na="", row.names=FALSE);
-  uri <- paste(HOST, "/api/v3/dataset/", PROJECTID, "/data/", TABLEKEY, "apiKey=", APIKEY, sep="");
-  res<-POST(uri, body=list(y=upload_file(TMPFILE,"text/csv")))
-  return(res);
+#' Upload Data Function
+#'
+#' This function uploads data.frame content to Protobi
+#'
+#' @param df A data.frame to uploaded to Protobi.
+#' @param projectid A character. Protobi project identifier.
+#' @param tablekey A character. The key of your Protobi data table.
+#' @param apikey A character. The APIKEY from your account profile, https://app.protobi.com/account.
+#' @param tmpfile A character.
+#' @param host A character.
+#' @return An httr response objec
+#' @export
+protobi_put_data <- function(df, projectid, tablekey, apikey, tmpfile="/tmp/RData.csv", host="https://app.protobi.com") {
+  utils::write.csv(df, tmpfile, na="", row.names=FALSE)
+  uri <- paste(host, "/api/v3/dataset/", projectid, "/data/", tablekey, "apiKey=", apikey, sep="")
+  httr::POST(uri, body=list(y=httr::upload_file(tmpfile, "text/csv")))
 }
 
 #' Get Formats Function
 #'
 #' This function returns an R List representing the Format metadata in Protobi based on the parameters provided.
-#' @param PROJECTID
-#' @param APIKEY
+#'
+#' @param projectid A character. Protobi project identifier.
+#' @param apikey A character. e APIKEY from your account profile, https://app.protobi.com/account.
+#' @return A list representing format metadata.
 #' @keywords protobi
-#' protobi.get_formats()
-protobi.get_formats <- function (PROJECTID,  APIKEY){
-  if (!requireNamespace("jsonlite", quietly = TRUE)) {
-    stop("jsonlite is needed for this function to work. Please install it.",
-    call. = FALSE)
-  }
-
-  a <- paste("https://app.protobi.com/api/v3/dataset/", PROJECTID , sep = "")
-  a <- paste(a, "/formats?apiKey=" , sep = "")
-  a <- paste(a, APIKEY, sep = "")
-  formatsDf <- fromJSON(a)
-  return (formatsDf)
+#' @export
+protobi_get_formats <- function(projectid, apikey) {
+  uri <- paste0(
+      "https://app.protobi.com/api/v3/dataset/", projectid,
+      "/formats?apiKey=", apikey
+  )
+  jsonlite::fromJSON(uri)
 }
 
 #' Get Titles Function
 #'
 #' This function returns an R List representing the Titles metadata in Protobi based on the parameters provided.
-#' @param PROJECTID
-#' @param APIKEY
+#'
+#' @param projectid A character. Protobi project identifier.
+#' @param apikey A character. e APIKEY from your account profile, https://app.protobi.com/account.
+#' @return A list representing titles metadata
 #' @keywords protobi
-#' protobi.get_titles()
-protobi.get_titles <- function (PROJECTID,  APIKEY) {
-  if (!requireNamespace("jsonlite", quietly = TRUE)) {
-    stop("jsonlite is needed for this function to work. Please install it.",
-    call. = FALSE)
-  }
-  a <- paste("https://app.protobi.com/api/v3/dataset/", PROJECTID , sep = "")
-  a <- paste(a, "/titles?apiKey=" , sep = "")
-  a <- paste(a, APIKEY, sep = "")
-  titlesDf <- fromJSON(a)
-  return (titlesDf)
+#' @export
+protobi_get_titles <- function(projectid,  apikey) {
+  uri <- paste0(
+    "https://app.protobi.com/api/v3/dataset/", projectid,
+    "/titles?apiKey=", apikey
+  )
+  jsonlite::fromJSON(uri)
 }
 
 #' Apply Formats Function
 #'
-#' Given the data and format, this function replaces the values in the dataframe column with the format metada values.
-#' @param data_df  #R dataframe
-#' @param format_df  #format metadata
+#' Given the data and format, this function replaces the values in the dataframe column with the format metadata values.
+#'
+#' @param df A data.frame.
+#' @param formats A list with format metadata as returned by protobi_get_formats.
+#' @return The df with levels adjusted according to formats.
 #' @keywords protobi
-#' protobi.get_formats()
-protobi.apply_formats <- function(data_df, format_df){
-  colNames <- colnames(data_df)
+#' @export
+protobi_apply_formats <- function(df, formats) {
+  colNames <- colnames(df)
   for (i in 1:length(colNames)) {
-    tempFormat <- format_df[[colNames[i]]]
+    tempFormat <- formats[[colNames[i]]]
     if (!is.null(tempFormat)){
-      data_df[[colNames[i]]] <- factor(data_df[[colNames[i]]], levels = tempFormat$levels, labels=tempFormat$labels)
+      df[[colNames[i]]] <- factor(df[[colNames[i]]], levels=tempFormat$levels, labels=tempFormat$labels)
     }
   }
-  return(data_df)
+  df
 }
 
 #' Apply Titles Function
 #'
-#' Given the data and format, this function assigns the tile (label) metadata to the R dataframe columns.
-#' @param data_df  #R dataframe
-#' @param names_df  #format metadata
+#' Given the data and titles, this function assigns the tile (label) metadata to the R dataframe columns.
+#'
+#' @param df A data.frame.
+#' @param titles A list with title metadata as returned from protobi_get_titles
+#' @return df with metadata attached.
 #' @keywords protobi
-#' protobi.get_titles()
-protobi.apply_titles <- function (data_df, names_df){
-  colNames <- colnames(data_df)
+#' @export
+protobi_apply_titles <- function(df, titles) {
+  colNames <- colnames(df)
   for (i in 1:length(colNames)) {
-    if (!is.null(names_df[colNames[i]])){
-      label(data_df[colNames[i]]) <- names_df[colNames[i]]
+    if (!is.null(titles[[colNames[i]]])) {
+      Hmisc::label(df[colNames[i]]) <- titles[colNames[i]]
     }
   }
-  return (data_df)
+  df
 }

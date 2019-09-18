@@ -13,21 +13,12 @@ and upload the revised dataframe back to Protobi.
 
 ## Install the package
 
-You can install the protobi library directly from GitHub using `devtools`.
+You can install the protobi library directly from GitHub using [`devtools`](https://github.com/r-lib/devtools).
 In the R command prompt issue the following command:
 ```R
-# load dependencies
-install.packages("HMisc", repos="http://cran.r-project.org")
-install.packages("jsonlite", repos="http://cran.r-project.org")
-library(HMisc)
-library(jasonlite)
-
-# load github installer
-install.packages("devtools")  
-library(devtools)
-
-# load protobi-r
-install_github("protobi/protobi-r")
+# Install devtools, if not already installed
+# install.packages("devtools")
+devtools::install_github("tidyverse/dplyr")
 ```
 
 ## Parameters
@@ -40,28 +31,28 @@ install_github("protobi/protobi-r")
 ## Use
 To download data from a Protobi project to an R dataframe:
 ```R
-data <- protobi.get_data(PROJECTID, TABLEKEY, APIKEY)
+data <- protobi_get_data(PROJECTID, TABLEKEY, APIKEY)
 ```
 
 To download the variable titles and value formats:
 ```R
-titles <- protobi.get_titles(PROJECTID, APIKEY)
-format <- protobi.get_formats(PROJECTID, APIKEY)
+titles <- protobi_get_titles(PROJECTID, APIKEY)
+format <- protobi_get_formats(PROJECTID, APIKEY)
 ```
 
 To add the variable titles to the R dataframe:
 ```R
-data_titles <- protobi.apply_formats (data, format)
+data_titles <- protobi_apply_formats (data, format)
 ```
 
 To apply the value formats as factors:
 ```R
-data_format <- protobi.apply_titles (data_titles,  titles)
+data_format <- protobi_apply_titles (data_titles,  titles)
 ```
 
 To upload a dataframe to a Protobi project:
 ```R
-protobi.put_data(data, PROJECTID, TABLEKEY, APIKEY)
+protobi_put_data(data, PROJECTID, TABLEKEY, APIKEY)
 ```
 
 ## Contribute
@@ -74,5 +65,5 @@ R CMD INSTALL --build --preclean .
 To install this package locally, in the R command prompt issue the following command
 
 ```R
-install.packages("PATH_TO_LOCAL_GIT_REPO/protobi_0.1.0.tgz", repos = NULL, type = .Platform$pkgType)
+devtools::install("PATH_TO_LOCAL_GIT_REPO")
 ```
