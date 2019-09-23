@@ -21,10 +21,11 @@ protobi_read_csv_gzip <- function(uri) {
 #' @param apikey A character. The APIKEY from your account profile, https://app.protobi.com/account.
 #' @keywords protobi
 #' @export
-protobi_get_data <- function(projectid, tablekey, apikey) {
+protobi_get_data <- function(projectid, tablekey, apikey, host="https://app.protobi.com") {
 
-  uri <- paste0("https://app.protobi.com/api/v3/dataset/", projectid, "/data/", tablekey, "/csv?apiKey=", apikey)
-  protobi_read_csv_gzip()
+  uri <- paste0(HOST, "/api/v3/dataset/", projectid, "/data/", tablekey, "/csv?apiKey=", apikey)
+  message(uri)
+  protobi_read_csv_gzip(uri)
 }
 
 #' Upload Data Function
@@ -44,13 +45,14 @@ protobi_put_data <- function(df, projectid, tablekey, apikey, host="https://app.
   # Ensure that temporary data is removed after protobi_put_data exits
   on.exit(tryCatch(unlink(temp_path), error=function(e) {}))
 
-  utils::write.csv(df, temp_path, na="", row.names=FALSE)
-  uri <- paste0(
-    host, "/api/v3/dataset/", projectid, "/data/", tablekey,
-    "/csv?apiKey=", apikey
-  )
-  httr::POST(uri, body=list(y=httr::upload_file(temp_path, "text/csv")))
+  utils::write.csv(df, temp_path, na="", row.names=TRUE)
+  uri <- paste0(host, "/api/v3/dataset/", projectid, "/data/", tablekey, "?apiKey=", apikey)
+  message(uri)
+  httr::POST(uri, body=list(file=httr::upload_file(temp_path, "text/csv")))
 }
+
+
+
 
 #' Get Formats Function
 #'

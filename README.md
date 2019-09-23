@@ -28,6 +28,7 @@ devtools::install_github("protobi/protobi-r")
 * Get the APIKEY from your account profile, https://app.protobi.com/account
 
 
+
 ## Use
 To download data from a Protobi project to an R dataframe:
 ```R
@@ -53,6 +54,19 @@ data_format <- protobi_apply_titles (data_titles,  titles)
 To upload a dataframe to a Protobi project:
 ```R
 protobi_put_data(data, PROJECTID, TABLEKEY, APIKEY)
+```
+
+## Example
+```R
+HOST <- 'https://app.protobi.com'
+PROJECTID <- '5b4cc4407bd7210003e2ed61'
+APIKEY <- '[see https://app.protobi.com/account]' 
+
+data <- protobi_get_data(PROJECTID, 'main', APIKEY, HOST)
+names(data)
+
+write.csv(data, tmp, na="", row.names=TRUE)
+protobi_put_data(data,
 ```
 
 ## Contribute
