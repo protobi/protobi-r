@@ -71,6 +71,27 @@ protobi_get_titles <- function(projectid,  apikey) {
   jsonlite::fromJSON(uri)
 }
 
+
+#' Internal helper function used to apply metadata to df
+#'
+#' Given df, metadata and updating function return df with updated columns
+#' @param df A data.frame.
+#' @param metadata A list.
+#' @param updater A function that takes a column name and returns corresponding data with attached metadata.
+#' @return df with metadata attached.
+protobi_apply_meta <- function(df, metadata, updater) {
+  # Get intersection of names of metadata object and data
+  cols <- intersect(
+    # excluding null entries i.e. {"col": null}
+    # and empty objects i.e {"col": {}}
+    # This is defensive approach, and might not be necessary
+    names(metadata)[lengths(metadata) != 0],
+    colnames(df)
+  )
+  df[cols] <- lapply(cols, updater)
+  df
+}
+
 #' Apply Formats Function
 #'
 #' Given the data and format, this function replaces the values in the dataframe column with the format metadata values.
@@ -81,14 +102,10 @@ protobi_get_titles <- function(projectid,  apikey) {
 #' @keywords protobi
 #' @export
 protobi_apply_formats <- function(df, formats) {
-  colNames <- colnames(df)
-  for (i in 1:length(colNames)) {
-    tempFormat <- formats[[colNames[i]]]
-    if (!is.null(tempFormat)){
-      df[[colNames[i]]] <- factor(df[[colNames[i]]], levels=tempFormat$levels, labels=tempFormat$labels)
-    }
-  }
-  df
+  protobi_apply_meta(df, formats, function(col) {
+    fmt <- formats[[col]]
+    factor(df[[col]], levels=fmt$levels, labels=fmt$labels)
+  })
 }
 
 #' Apply Titles Function
@@ -101,11 +118,9 @@ protobi_apply_formats <- function(df, formats) {
 #' @keywords protobi
 #' @export
 protobi_apply_titles <- function(df, titles) {
-  colNames <- colnames(df)
-  for (i in 1:length(colNames)) {
-    if (!is.null(titles[[colNames[i]]])) {
-      Hmisc::label(df[colNames[i]]) <- titles[colNames[i]]
-    }
-  }
-  df
+  protobi_apply_meta(df, titles, function(col) {
+    col_data <- df[[col]]
+    Hmisc::label(col_data) <- titles[[col]]
+    col_data
+  })
 }
