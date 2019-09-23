@@ -33,7 +33,10 @@ protobi_put_data <- function(df, projectid, tablekey, apikey, host="https://app.
   on.exit(tryCatch(unlink(temp_path), error=function(e) {}))
 
   utils::write.csv(df, temp_path, na="", row.names=FALSE)
-  uri <- paste(host, "/api/v3/dataset/", projectid, "/data/", tablekey, "apiKey=", apikey, sep="")
+  uri <- paste0(
+    host, "/api/v3/dataset/", projectid, "/data/", tablekey,
+    "/csv?apiKey=", apikey
+  )
   httr::POST(uri, body=list(y=httr::upload_file(temp_path, "text/csv")))
 }
 
