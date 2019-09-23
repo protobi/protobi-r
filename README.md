@@ -18,7 +18,7 @@ In the R command prompt issue the following command:
 ```R
 # Install devtools, if not already installed
 # install.packages("devtools")
-devtools::install_github("tidyverse/dplyr")
+devtools::install_github("protobi/protobi-r")
 ```
 
 ## Parameters

@@ -23,14 +23,18 @@ protobi_get_data <- function(projectid, tablekey, apikey) {
 #' @param projectid A character. Protobi project identifier.
 #' @param tablekey A character. The key of your Protobi data table.
 #' @param apikey A character. The APIKEY from your account profile, https://app.protobi.com/account.
-#' @param tmpfile A character.
 #' @param host A character.
 #' @return An httr response objec
 #' @export
-protobi_put_data <- function(df, projectid, tablekey, apikey, tmpfile="/tmp/RData.csv", host="https://app.protobi.com") {
-  utils::write.csv(df, tmpfile, na="", row.names=FALSE)
+protobi_put_data <- function(df, projectid, tablekey, apikey, host="https://app.protobi.com") {
+  # Create a path for temporary output
+  temp_path <- tempfile()
+  # Ensure that temporary data is removed after protobi_put_data exits
+  on.exit(tryCatch(unlink(temp_path), error=function(e) {}))
+
+  utils::write.csv(df, temp_path, na="", row.names=FALSE)
   uri <- paste(host, "/api/v3/dataset/", projectid, "/data/", tablekey, "apiKey=", apikey, sep="")
-  httr::POST(uri, body=list(y=httr::upload_file(tmpfile, "text/csv")))
+  httr::POST(uri, body=list(y=httr::upload_file(temp_path, "text/csv")))
 }
 
 #' Get Formats Function

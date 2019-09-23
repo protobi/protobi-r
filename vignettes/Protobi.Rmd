@@ -1,0 +1,12 @@
+---
+title: "Protobi"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Protobi}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, echo=FALSE}
+htmltools::includeMarkdown("../README.md")
+```
