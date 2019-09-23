@@ -21,6 +21,11 @@ In the R command prompt issue the following command:
 devtools::install_github("protobi/protobi-r")
 ```
 
+then load the library
+```R
+library(protobi)
+```
+
 ## Parameters
 
 * Get the PROJECTID from your Protobi project url, e.g. `https://app.protobi.com/v3/datasets/5386226fa0caa60200000003`

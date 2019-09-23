@@ -23,7 +23,7 @@ protobi_read_csv_gzip <- function(uri) {
 #' @export
 protobi_get_data <- function(projectid, tablekey, apikey, host="https://app.protobi.com") {
 
-  uri <- paste0(HOST, "/api/v3/dataset/", projectid, "/data/", tablekey, "/csv?apiKey=", apikey)
+  uri <- paste0(host, "/api/v3/dataset/", projectid, "/data/", tablekey, "/csv?apiKey=", apikey)
   message(uri)
   protobi_read_csv_gzip(uri)
 }
