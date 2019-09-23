@@ -47,3 +47,6 @@ jspm_packages
 .Rproj.user/*
 .RData
 .Rhistory
+inst/doc
+doc
+Meta
