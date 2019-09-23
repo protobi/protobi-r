@@ -1,3 +1,17 @@
+
+#' Utility to read zipped CSV from URL
+#'
+#' This function reads a CSV from a URL in GZip format and returns a data frame
+#' @param uri   Address of CSV
+#' @export
+protobi_read_csv_gzip <- function(uri) {
+  con <- gzcon(url(uri))
+  txt <- readLines(con, warn=FALSE)
+  tcn <- textConnection(txt)
+  return(read.csv(tcn))
+}
+
+
 #' Get Data Function
 #'
 #' This function returns an R data frame representing the data in Protobi based on the parameters provided.
@@ -8,11 +22,9 @@
 #' @keywords protobi
 #' @export
 protobi_get_data <- function(projectid, tablekey, apikey) {
-  uri <- paste0(
-    "https://app.protobi.com/api/v3/dataset/", projectid, "/data/", tablekey,
-    "/csv?apiKey=", apikey
-  )
-  utils::read.csv(uri)
+
+  uri <- paste0("https://app.protobi.com/api/v3/dataset/", projectid, "/data/", tablekey, "/csv?apiKey=", apikey)
+  protobi_read_csv_gzip()
 }
 
 #' Upload Data Function
