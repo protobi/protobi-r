@@ -61,18 +61,80 @@ To upload a dataframe to a Protobi project:
 protobi_put_data(data, PROJECTID, TABLEKEY, APIKEY)
 ```
 
-## Example
+## K-Means segmentation and Principal Components Analysis
+
+Here's a simple example to calculate candidate k-means segmentations and principal components analysis,
+based on battery of attitudinal questions **Q14a-m**
 ```R
-HOST <- 'https://app.protobi.com'
-PROJECTID <- '5b4cc4407bd7210003e2ed61'
-APIKEY <- '[see https://app.protobi.com/account]' 
+HOST <- 'https://app.protobi.com'                  ## or 'https://rtanalytics.sermo.com'
+APIKEY <- 'xxxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxx'    ## see https://rtanalytics.sermo.com/account for your API key
+PROJECTID <- 'xxxxxxxxxxxxxxxxxxxx'                ## Unique identifier for project from project URL
+INPUT_TABLE <- 'main'                              ## See Data tab under project admin for keys
+OUTPUT_TABLE <- 'processed' 
 
-data <- protobi_get_data(PROJECTID, 'main', APIKEY, HOST)
-names(data)
 
-write.csv(data, tmp, na="", row.names=TRUE)
-protobi_put_data(data,
+install.packages("devtools")                        # Install devtools, if not already installed
+devtools::install_github("protobi/protobi-r")       # Install protobi-r, if not already installed
+library(protobi)
+
+
+# Download data from project
+data <- protobi_get_data(PROJECTID, INPUT_TABLE, APIKEY, host=HOST)
+
+
+# Create a data frame with selected columns for analysis
+basis <- cbind.data.frame(
+    data$Q14a,
+    data$Q14b,
+    data$Q14c,
+    data$Q14d,
+    data$Q14e,
+    data$Q14f,
+    data$Q14g,
+    data$Q14h,
+    data$Q14i,
+    data$Q14j,
+    data$Q14k,
+    data$Q14l,
+    data$Q14m
+)
+
+# K-Means cluster analysis
+    res2 <- kmeans(basis, 2, iter.max=100)
+    res3 <- kmeans(basis, 3, iter.max=100)
+    res4 <- kmeans(basis, 4, iter.max=100)
+    res5 <- kmeans(basis, 5, iter.max=100)
+
+# Attach k-means cluster membership to original data
+    data$cluster2 = res2$cluster
+    data$cluster3 = res3$cluster
+    data$cluster4 = res4$cluster
+    data$cluster5 = res5$cluster
+
+# Principal components analysis
+    pres <- prcomp(basis)
+    pred <- predict(pres, basis)
+
+# Attach principal component scores to original data
+    data$pca1 <- pred[, c(1)]
+    data$pca2 <- pred[, c(2)]
+
+# Upload data file back to project
+protobi_put_data(data, PROJECTID, OUTPUT_TABLE, APIKEY, host='https://rtanalytics.sermo.com')
 ```
+
+At this point there will be a new data table in the project, with additional columns:
+    **cluster2**,   // candidate 2-cluster solution
+    **cluster3**,   // candidate 3-cluster solution 
+    **cluster4**,   // candidate 4-cluster solution 
+    **cluster5**,   // candidate 5-cluster solution  
+and 
+    **pca1**        // first principal component 
+    **pca2**.       // first principal component 
+    
+You can refer to the R output for more detailed results, such as factor loading, etc.
+
+Set the new table to be primary table for the project, and you can add these new columns to the dashboard.
 
 ## Contribute
 To build the package, clone the repository, and from the project root directory issue the command:
