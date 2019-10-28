@@ -67,7 +67,7 @@ Here's a simple example to calculate candidate k-means segmentations and princip
 based on battery of attitudinal questions **Q14a-m**
 ```R
 HOST <- 'https://app.protobi.com'                  ## or 'https://rtanalytics.sermo.com'
-APIKEY <- 'xxxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxx'    ## see https://rtanalytics.sermo.com/account for your API key
+APIKEY <- 'xxxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxx'    ## see [HOST]*/account for your API key
 PROJECTID <- 'xxxxxxxxxxxxxxxxxxxx'                ## Unique identifier for project from project URL
 INPUT_TABLE <- 'main'                              ## See Data tab under project admin for keys
 OUTPUT_TABLE <- 'processed' 
@@ -124,13 +124,13 @@ protobi_put_data(data, PROJECTID, OUTPUT_TABLE, APIKEY, host='https://rtanalytic
 ```
 
 At this point there will be a new data table in the project, with additional columns:
-    **cluster2**,   // candidate 2-cluster solution
-    **cluster3**,   // candidate 3-cluster solution 
-    **cluster4**,   // candidate 4-cluster solution 
-    **cluster5**,   // candidate 5-cluster solution  
+  *  **cluster2**,   // candidate 2-cluster solution
+  *  **cluster3**,   // candidate 3-cluster solution 
+  *  **cluster4**,   // candidate 4-cluster solution 
+  *  **cluster5**,   // candidate 5-cluster solution  
 and 
-    **pca1**        // first principal component 
-    **pca2**.       // first principal component 
+  *  **pca1**        // first principal component 
+  *  **pca2**.       // first principal component 
     
 You can refer to the R output for more detailed results, such as factor loading, etc.
 
