@@ -37,31 +37,19 @@ library(protobi)
 ## Use
 To download data from a Protobi project to an R dataframe:
 ```R
-data <- protobi_get_data(PROJECTID, TABLEKEY, APIKEY)
+data <- protobi_get_data(PROJECTID, TABLEKEY, APIKEY, host='https://app.protobi.com', formats=FALSE, titles=FALSE)
 ```
 
-To download the variable titles and value formats:
-```R
-titles <- protobi_get_titles(PROJECTID, APIKEY)
-format <- protobi_get_formats(PROJECTID, APIKEY)
-```
+If selected, varible labels are attached to the data frame as titles, 
+and value formats are applied to the data frame as factors. 
 
-To add the variable titles to the R dataframe:
-```R
-data_titles <- protobi_apply_formats (data, format)
-```
-
-To apply the value formats as factors:
-```R
-data_format <- protobi_apply_titles (data_titles,  titles)
-```
 
 To upload a dataframe to a Protobi project:
 ```R
 protobi_put_data(data, PROJECTID, TABLEKEY, APIKEY)
 ```
 
-## K-Means segmentation and Principal Components Analysis
+## Example: K-Means segmentation and Principal Components Analysis
 
 Here's a simple example to calculate candidate k-means segmentations and principal components analysis,
 based on battery of attitudinal questions **Q14a-m**
@@ -127,8 +115,10 @@ At this point there will be a new data table in the project, with additional col
   *  **cluster2**,   // candidate 2-cluster solution
   *  **cluster3**,   // candidate 3-cluster solution 
   *  **cluster4**,   // candidate 4-cluster solution 
-  *  **cluster5**,   // candidate 5-cluster solution  
+  *  **cluster5**,   // candidate 5-cluster solution
+    
 and 
+
   *  **pca1**        // first principal component 
   *  **pca2**.       // first principal component 
     

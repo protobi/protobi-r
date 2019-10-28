@@ -19,13 +19,24 @@ protobi_read_csv_gzip <- function(uri) {
 #' @param projectid A character. Protobi project identifier.
 #' @param tablekey A character. The key of your Protobi data table.
 #' @param apikey A character. The APIKEY from your account profile, https://app.protobi.com/account.
+#' @param host  Application host, default is https://app.protobi.com, or use https://rtanalytics.sermo.com for SERMO
+#' @param formats  Optionally download and apply value formats as factors
+#' @param titles   Optionally download and apply variable labels as column titles
 #' @keywords protobi
 #' @export
-protobi_get_data <- function(projectid, tablekey, apikey, host="https://app.protobi.com") {
+protobi_get_data <- function(projectid, tablekey, apikey, host="https://app.protobi.com", formats=FALSE, titles=FALSE) {
 
   uri <- paste0(host, "/api/v3/dataset/", projectid, "/data/", tablekey, "/csv?apiKey=", apikey)
   message(uri)
-  protobi_read_csv_gzip(uri)
+  df <- protobi_read_csv_gzip(uri)
+
+  if(formats) {
+    df <- protobi.apply_formats(df, protobi.get_formats(PROJECTID, APIKEY))
+  }
+  if(titles) {
+    df <- protobi.apply_titles(d, protobi.get_titles(PROJECTID, APIKEY))
+  }
+  df
 }
 
 #' Upload Data Function
