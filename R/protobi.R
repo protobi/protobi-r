@@ -31,10 +31,10 @@ protobi_get_data <- function(projectid, tablekey, apikey, host="https://app.prot
   df <- protobi_read_csv_gzip(uri)
 
   if(formats) {
-    df <- protobi.apply_formats(df, protobi.get_formats(PROJECTID, APIKEY))
+    df <- protobi_apply_formats(df, protobi.get_formats(PROJECTID, APIKEY))
   }
   if(titles) {
-    df <- protobi.apply_titles(d, protobi.get_titles(PROJECTID, APIKEY))
+    df <- protobi_apply_titles(d, protobi.get_titles(PROJECTID, APIKEY))
   }
   df
 }
