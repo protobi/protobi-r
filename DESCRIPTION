@@ -1,7 +1,7 @@
 Package: protobi
 Type: Package
 Title: Protobi R Library
-Version: 0.1.0
+Version: 1.1
 Author: Ashwini Kumar
 Maintainer: Ashwini Kumar <kumar_ashni@yahoo.com>
 Description: Utilities to get data and metadata from a Protobi project as an R Data Frame,
@@ -14,5 +14,5 @@ Imports:
   httr,
   jsonlite
 RoxygenNote: 6.1.1
-Suggests: 
+Suggests:
   testthat
