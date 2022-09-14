@@ -31,10 +31,10 @@ protobi_get_data <- function(projectid, tablekey, apikey, host="https://app.prot
   df <- protobi_read_csv_gzip(uri)
 
   if(formats) {
-    protobi_apply_formats(df, protobi_get_formats(projectid, apikey))
+    protobi_apply_formats(df, protobi_get_formats(projectid, apikey, host))
   }
   if(titles) {
-    protobi_apply_titles(projectid, protobi_get_titles(projectid, apikey))
+    protobi_apply_titles(projectid, protobi_get_titles(projectid, apikey, host))
   }
   df
 }
@@ -62,9 +62,6 @@ protobi_put_data <- function(df, projectid, tablekey, apikey, host="https://app.
   httr::POST(uri, body=list(file=httr::upload_file(temp_path, "text/csv")))
 }
 
-
-
-
 #' Get Formats Function
 #'
 #' This function returns an R List representing the Format metadata in Protobi based on the parameters provided.
@@ -74,11 +71,9 @@ protobi_put_data <- function(df, projectid, tablekey, apikey, host="https://app.
 #' @return A list representing format metadata.
 #' @keywords protobi
 #' @export
-protobi_get_formats <- function(projectid, apikey) {
-  uri <- paste0(
-      "https://app.protobi.com/api/v3/dataset/", projectid,
-      "/formats?apiKey=", apikey
-  )
+protobi_get_formats <- function(projectid, apikey, host) {
+  uri <- paste0(host, "/api/v3/dataset/", projectid,"/formats?apiKey=", apikey)
+  message(uri)
   jsonlite::fromJSON(uri)
 }
 
@@ -91,11 +86,9 @@ protobi_get_formats <- function(projectid, apikey) {
 #' @return A list representing titles metadata
 #' @keywords protobi
 #' @export
-protobi_get_titles <- function(projectid,  apikey) {
-  uri <- paste0(
-    "https://app.protobi.com/api/v3/dataset/", projectid,
-    "/titles?apiKey=", apikey
-  )
+protobi_get_titles <- function(projectid,  apikey, host) {
+  uri <- paste0(host, "/api/v3/dataset/", projectid, "/titles?apiKey=", apikey)
+  message(uri)
   jsonlite::fromJSON(uri)
 }
 
