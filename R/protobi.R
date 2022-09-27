@@ -34,7 +34,7 @@ protobi_get_data <- function(projectid, tablekey, apikey, host="https://app.prot
     protobi_apply_formats(df, protobi_get_formats(projectid, apikey, host))
   }
   if(titles) {
-    protobi_apply_titles(projectid, protobi_get_titles(projectid, apikey, host))
+    df <- protobi_apply_titles(df, protobi_get_titles(projectid, apikey, host))
   }
   df
 }
@@ -109,6 +109,7 @@ protobi_apply_meta <- function(df, metadata, updater) {
     names(metadata)[lengths(metadata) != 0],
     colnames(df)
   )
+  cols
   df[cols] <- lapply(cols, updater)
   df
 }
@@ -127,11 +128,12 @@ protobi_apply_formats <- function(df, formats) {
     fmt <- formats[[col]]
     factor(df[[col]], levels=fmt$levels, labels=fmt$labels)
   })
+  df
 }
 
 #' Apply Titles Function
 #'
-#' Given the data and titles, this function assigns the tile (label) metadata to the R dataframe columns.
+#' Given the data and titles, this function assigns the title (label) metadata to the R dataframe columns.
 #'
 #' @param df A data.frame.
 #' @param titles A list with title metadata as returned from protobi_get_titles
@@ -139,9 +141,16 @@ protobi_apply_formats <- function(df, formats) {
 #' @keywords protobi
 #' @export
 protobi_apply_titles <- function(df, titles) {
-  protobi_apply_meta(df, titles, function(col) {
-    col_data <- df[[col]]
-    Hmisc::label(col_data) <- titles[[col]]
-    col_data
-  })
+  df_labels <- as.data.frame(unlist(titles))
+  df_labels$colname <- rownames(df_labels)
+
+  for (i in c(1:ncol(df))) {
+    col_name <- df_labels[i,2]
+    col_label <- df_labels[i,1]
+
+    if (col_name %in% colnames(df)) {
+      Hmisc::label(df[, col_name]) <- col_label
+    }
+  }
+  df
 }
