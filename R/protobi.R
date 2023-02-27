@@ -50,7 +50,7 @@ protobi_get_data <- function(projectid, tablekey, apikey, host="https://app.prot
 #' @param host A character.
 #' @return An httr response objec
 #' @export
-protobi_put_data <- function(df, projectid, tablekey, apikey, host="https://app.protobi.com") {
+protobi_put_data <- function(df, projectid, tablekey, apikey, host="https://app.protobi.com", type="data", filename="data.csv") {
   # Create a path for temporary output
   temp_path <- tempfile()
   # Ensure that temporary data is removed after protobi_put_data exits
@@ -59,7 +59,7 @@ protobi_put_data <- function(df, projectid, tablekey, apikey, host="https://app.
   utils::write.csv(df, temp_path, na="", row.names=TRUE)
   uri <- paste0(host, "/api/v3/dataset/", projectid, "/data/", tablekey, "?apiKey=", apikey)
   message(uri)
-  httr::POST(uri, body=list(file=httr::upload_file(temp_path, "text/csv")))
+  httr::POST(uri, body=list(file=httr::upload_file(temp_path, "text/csv"), type=type, filename=filename))
 }
 
 #' Get Formats Function
