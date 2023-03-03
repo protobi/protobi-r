@@ -47,8 +47,9 @@ protobi_get_data <- function(projectid, tablekey, apikey, host="https://app.prot
 #' @param projectid A character. Protobi project identifier.
 #' @param tablekey A character. The key of your Protobi data table.
 #' @param apikey A character. The APIKEY from your account profile, https://app.protobi.com/account.
-#' @param host A character.
-#' @return An httr response objec
+#' @param host URL, defaults to "https://app.protobi.com"
+#' @param filename Optional name of file, defaults to "data.csv"
+#' @return An httr response object
 #' @export
 protobi_put_data <- function(df, projectid, tablekey, apikey, host="https://app.protobi.com", type="data", filename="data.csv") {
   # Create a path for temporary output
