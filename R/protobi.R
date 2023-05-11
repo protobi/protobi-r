@@ -262,6 +262,7 @@ protobi_put_properties <- function(projectid, apikey, execkey, propertykeyvalue,
 
   if(!is.list(propertykeyvalue) | (is.list(propertykeyvalue) & length(names(propertykeyvalue)) == 0)) {stop("'propertykeyvalue' must be a named list")}
   if(purrr::pluck_depth(propertykeyvalue) > 2) {stop("'propertykeyvalue' cannot be a nested list")}
+  if(purrr::some(lengths(propertykeyvalue), function(x) x > 1)) {stop("'propertykeyvalue' must have only key value pairs; no list elements with multiple values")}
   if(purrr::some(propertykeyvalue, function(x) x == "" | is.null(x) | is.na(x))) {stop("'propertykeyvalue' cannot have blank, NULL, or NA values")}
   if(purrr::some(names(propertykeyvalue), function(x) x == "")) {stop("all 'propertykeyvalue' values must have an accompanying non-blank name")}
 
@@ -300,7 +301,7 @@ protobi_execute <- function(projectid, apikey, execkey, host = "https://app.prot
 
 #' Get data table details
 #'
-#' protobi_get_table_details() returns the names of all data tables associated with a Protobi project's schema (default) or primary-table.
+#' protobi_get_table_details() returns details of all data tables associated with a Protobi project's schema (default) or primary-table.
 #'
 #' @param projectid A character. Protobi project identifier.
 #' @param apikey A character. The APIKEY from your account profile, https://app.protobi.com/account.
@@ -308,7 +309,7 @@ protobi_execute <- function(projectid, apikey, execkey, host = "https://app.prot
 #' @param host URL, defaults to "https://v4.protobi.com"
 #' @param only_names TRUE/FALSE, defaults to FALSE. Use TRUE to return only data table names. Optionally use 'prune' in tandem to filter result.
 #' @param prune Optional stringr-formatted pattern. Pattern match data table names to remove from result. only_names must be TRUE to use.
-#' @return An httr response object
+#' @return An R data frame
 #' @export
 protobi_get_table_details <- function(projectid, apikey, scopekey = "schema", host = "https://v4.protobi.com", only_names = FALSE, prune = NULL) {
 
@@ -361,7 +362,7 @@ protobi_get_table_details <- function(projectid, apikey, scopekey = "schema", ho
     }
   }
 
-  output <- as_tibble(obj)
+  output <- tibble::as_tibble(obj)
 
   return(output)
 }
