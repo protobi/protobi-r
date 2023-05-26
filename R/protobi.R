@@ -191,7 +191,9 @@ protobi_get_url <- function(url) {
 #' @export
 protobi_put_url <- function(url) {
 
-  resp <- httr::PUT(url)
+  url_encoded <- utils::URLencode(url, reserved = FALSE, repeated = FALSE)
+
+  resp <- httr::PUT(url_encoded)
 
   httr::stop_for_status(resp, task = resp$url)
 
