@@ -330,14 +330,11 @@ protobi_get_table_details <- function(projectid, apikey, scopekey = "schema", ho
     cat("returning current tables in primaryTable", fill = TRUE)
     if (only_names) {cat(paste0("returning only table names; pruned: '", prune, "'"), fill = TRUE)}
     obj <- protobi_get_url(url)
-    obj <- dplyr::rename(obj, table_name = key)  #consistent naming
+    obj <- dplyr::rename(obj, table_name = key)
 
     if (only_names) {
-      # remove non-data objects
       obj <- dplyr::filter(obj, stringr::str_detect(type, "data"))
-      # keys
       obj <- dplyr::select(obj, table_name)
-      # optional pruning
       if(!is.null(prune)) {obj <- dplyr::filter(obj, !stringr::str_detect(table_name, prune))}
     }
   }
@@ -352,19 +349,17 @@ protobi_get_table_details <- function(projectid, apikey, scopekey = "schema", ho
     message(url)
     cat("returning all tables in schema", fill = TRUE)
     if (only_names) {cat(paste0("returning only table names; pruned: '", prune, "'"), fill = TRUE)}
+
     obj <- protobi_get_url(url)$rows
-    # remove hidden _keys and _rejects, user does not need
     obj <- dplyr::filter(obj, !stringr::str_detect(table_name, "_keys$|_rejects$"))
 
     if (only_names) {
-      # keys
       obj <- dplyr::select(obj, table_name)
-      # optional pruning
       if(!is.null(prune)) {obj <- dplyr::filter(obj, !stringr::str_detect(table_name, prune))}
     }
   }
 
-  output <- tibble::as_tibble(obj)
+  output <- as.data.frame(obj)
 
   return(output)
 }
