@@ -1,18 +1,24 @@
 Package: protobi
 Type: Package
 Title: Protobi R Library
-Version: 1.4
-Author: Ashwini Kumar, Pieter Sheth-Voss
+Version: 1.5
+Author: Ashwini Kumar, Pieter Sheth-Voss, Patrick Franco
 Maintainer: Protobi <support@protobi.com>
 Description: Utilities to get data and metadata from a Protobi project as an R Data Frame,
     apply variable labels as titles, apply value labels as factors, and send a new or revised R data frame to Protobi.
+    Additional utilities to access/edit project properties, execute data processes, and get a project's data tables.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Imports:
+  dplyr,
   Hmisc,
   httr,
-  jsonlite
+  jsonlite,
+  purrr,
+  stringr,
+  tibble,
+  utils
 RoxygenNote: 6.1.1
 Suggests:
   testthat
