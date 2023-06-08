@@ -15,6 +15,6 @@ protobi_apply_titles(df, titles)
 df with metadata attached.
 }
 \description{
-Given the data and titles, this function assigns the tile (label) metadata to the R dataframe columns.
+Given the data and titles, this function assigns the title (label) metadata to the R dataframe columns.
 }
 \keyword{protobi}

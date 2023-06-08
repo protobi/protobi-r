@@ -4,7 +4,7 @@
 \alias{protobi_get_formats}
 \title{Get Formats Function}
 \usage{
-protobi_get_formats(projectid, apikey)
+protobi_get_formats(projectid, apikey, host)
 }
 \arguments{
 \item{projectid}{A character. Protobi project identifier.}
