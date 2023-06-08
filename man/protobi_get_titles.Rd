@@ -4,7 +4,7 @@
 \alias{protobi_get_titles}
 \title{Get Titles Function}
 \usage{
-protobi_get_titles(projectid, apikey)
+protobi_get_titles(projectid, apikey, host)
 }
 \arguments{
 \item{projectid}{A character. Protobi project identifier.}
