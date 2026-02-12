@@ -51,3 +51,6 @@ jspm_packages
 inst/doc
 doc
 Meta
+
+# Environment variables
+.env

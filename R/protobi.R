@@ -29,6 +29,7 @@ protobi_get_data <- function(projectid, tablekey, apikey, host="https://app.prot
   uri <- paste0(host, "/api/v3/dataset/", projectid, "/data/", tablekey, "/csv?apiKey=", apikey)
   message(uri)
   df <- protobi_read_csv_gzip(uri)
+  httr::set_config(httr::config(ssl_verifypeer = 0L))
 
   if(formats) {
     protobi_apply_formats(df, protobi_get_formats(projectid, apikey, host))
@@ -48,10 +49,12 @@ protobi_get_data <- function(projectid, tablekey, apikey, host="https://app.prot
 #' @param tablekey A character. The key of your Protobi data table.
 #' @param apikey A character. The APIKEY from your account profile, https://app.protobi.com/account.
 #' @param host URL, defaults to "https://app.protobi.com"
+#' @param type Type of data, defaults to "data"
 #' @param filename Optional name of file, defaults to "data.csv"
-#' @return An httr response object
+#' @param timeout_seconds Maximum time in seconds to wait for async task completion, defaults to 300 (5 minutes)
+#' @return A list with elements: complete (boolean), result (url when complete=true), and possibly callback (url) or message (string) when complete=false
 #' @export
-protobi_put_data <- function(df, projectid, tablekey, apikey, host="https://app.protobi.com", type="data", filename="data.csv") {
+protobi_put_data <- function(df, projectid, tablekey, apikey, host="https://app.protobi.com", type="data", filename="data.csv", timeout_seconds=300) {
   # Create a path for temporary output
   temp_path <- tempfile()
   # Ensure that temporary data is removed after protobi_put_data exits
@@ -60,7 +63,73 @@ protobi_put_data <- function(df, projectid, tablekey, apikey, host="https://app.
   utils::write.csv(df, temp_path, na="", row.names=TRUE)
   uri <- paste0(host, "/api/v3/dataset/", projectid, "/data/", tablekey, "?apiKey=", apikey)
   message(uri)
-  httr::POST(uri, body=list(file=httr::upload_file(temp_path, "text/csv"), type=type, filename=filename))
+
+  response <- httr::POST(uri, body=list(file=httr::upload_file(temp_path, "text/csv"), type=type, filename=filename), httr::config(ssl_verifypeer = 0L, ssl_verifyhost = 0L))
+
+  # Parse JSON response
+  content <- httr::content(response, as="text", encoding="UTF-8")
+  result <- jsonlite::fromJSON(content)
+
+  # If the task is not complete and has a callback, poll until completion or timeout
+  if (!is.null(result$complete) && !result$complete && !is.null(result$callback)) {
+    message("Task initiated. Polling for completion...")
+    start_time <- Sys.time()
+
+    while (TRUE) {
+      # Check if timeout has been exceeded
+      elapsed <- as.numeric(difftime(Sys.time(), start_time, units="secs"))
+      if (elapsed > timeout_seconds) {
+        warning(paste("Timeout after", timeout_seconds, "seconds. Task may still be processing."))
+        return(result)
+      }
+
+      # Adaptive polling interval based on elapsed time
+      # 0-60s: poll every 1 second
+      # 60-120s: poll every 2 seconds
+      # 120-180s: poll every 3 seconds
+      # 180-300s: poll every 5 seconds
+      # 300+s: poll every 5 seconds
+      if (elapsed < 60) {
+        poll_interval <- 1
+      } else if (elapsed < 120) {
+        poll_interval <- 2
+      } else if (elapsed < 180) {
+        poll_interval <- 3
+      } else {
+        poll_interval <- 5
+      }
+
+      # Wait before polling
+      Sys.sleep(poll_interval)
+
+      # Poll the callback URL
+      # Handle both absolute and relative callback URLs
+      callback <- result$callback
+      if (!grepl("^https?://", callback)) {
+        # Relative URL, prepend host
+        callback_url <- paste0(host, callback, "?apiKey=", apikey)
+      } else {
+        # Absolute URL
+        callback_url <- paste0(callback, "?apiKey=", apikey)
+      }
+      poll_response <- httr::GET(callback_url, httr::config(ssl_verifypeer = 0L, ssl_verifyhost = 0L))
+      poll_content <- httr::content(poll_response, as="text", encoding="UTF-8")
+      result <- jsonlite::fromJSON(poll_content)
+
+      # Check if task is complete
+      if (!is.null(result$complete) && result$complete) {
+        message("Task completed successfully!")
+        break
+      }
+
+      # Show progress message if available
+      if (!is.null(result$message)) {
+        message(paste("Status:", result$message))
+      }
+    }
+  }
+
+  return(result)
 }
 
 #' Get Formats Function
@@ -129,7 +198,6 @@ protobi_apply_formats <- function(df, formats) {
     fmt <- formats[[col]]
     factor(df[[col]], levels=fmt$levels, labels=fmt$labels)
   })
-  df
 }
 
 #' Apply Titles Function
