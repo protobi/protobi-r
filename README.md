@@ -49,6 +49,13 @@ To upload a dataframe to a Protobi project:
 protobi_put_data(data, PROJECTID, TABLEKEY, APIKEY)
 ```
 
+To execute a remote data process in Protobi:
+```R
+result <- protobi_run_process(PROJECTID, TABLEKEY, APIKEY)
+```
+
+This function executes a data process configured for the specified table key and automatically polls until completion or timeout (default 5 minutes). The result contains the process output including any SQL query results or error messages.
+
 ## Example: K-Means segmentation and Principal Components Analysis
 
 Here's a simple example to calculate candidate k-means segmentations and principal components analysis,
