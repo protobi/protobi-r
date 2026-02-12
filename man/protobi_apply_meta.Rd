@@ -2,7 +2,7 @@
 % Please edit documentation in R/protobi.R
 \name{protobi_apply_meta}
 \alias{protobi_apply_meta}
-\title{Internal helper function111}
+\title{Internal helper function used to apply metadata to df}
 \usage{
 protobi_apply_meta(df, metadata, updater)
 }
@@ -11,7 +11,7 @@ protobi_apply_meta(df, metadata, updater)
 
 \item{metadata}{A list.}
 
-\item{updater}{A function that takes a column name and return corresponding data with attached metadata.}
+\item{updater}{A function that takes a column name and returns corresponding data with attached metadata.}
 }
 \value{
 df with metadata attached.

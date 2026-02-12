@@ -4,8 +4,15 @@
 \alias{protobi_put_data}
 \title{Upload Data Function}
 \usage{
-protobi_put_data(df, projectid, tablekey, apikey,
-  tmpfile = "/tmp/RData.csv", host = "https://app.protobi.com")
+protobi_put_data(
+  df,
+  projectid,
+  tablekey,
+  apikey,
+  host = "https://app.protobi.com",
+  type = "data",
+  filename = "data.csv"
+)
 }
 \arguments{
 \item{df}{A data.frame to uploaded to Protobi.}
@@ -16,12 +23,12 @@ protobi_put_data(df, projectid, tablekey, apikey,
 
 \item{apikey}{A character. The APIKEY from your account profile, https://app.protobi.com/account.}
 
-\item{tmpfile}{A character.}
+\item{host}{URL, defaults to "https://app.protobi.com"}
 
-\item{host}{A character.}
+\item{filename}{Optional name of file, defaults to "data.csv"}
 }
 \value{
-An httr response objec
+An httr response object
 }
 \description{
 This function uploads data.frame content to Protobi
