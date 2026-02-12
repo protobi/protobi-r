@@ -1,7 +1,7 @@
 Package: protobi
 Type: Package
 Title: Protobi R Library
-Version: 1.5
+Version: 1.6
 Author: Ashwini Kumar, Pieter Sheth-Voss, Patrick Franco
 Maintainer: Protobi <support@protobi.com>
 Description: Utilities to get data and metadata from a Protobi project as an R Data Frame,
