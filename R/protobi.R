@@ -11,6 +11,63 @@ protobi_read_csv_gzip <- function(uri) {
   return(read.csv(tcn))
 }
 
+#' Poll Task Helper Function
+#'
+#' Internal helper function to poll a task manager callback until completion or timeout
+#'
+#' @param result Initial result object from API call with complete, callback, and message fields
+#' @param host URL of the Protobi host
+#' @param apikey API key for authentication
+#' @param timeout_seconds Maximum time in seconds to wait for task completion
+#' @return Final result object when complete or timed out
+protobi_poll_task <- function(result, host, apikey, timeout_seconds) {
+  if (!is.null(result$complete) && !result$complete && !is.null(result$callback)) {
+    message("Task initiated. Polling for completion...")
+    start_time <- Sys.time()
+
+    while (TRUE) {
+      elapsed <- as.numeric(difftime(Sys.time(), start_time, units="secs"))
+      if (elapsed > timeout_seconds) {
+        warning(paste("Timeout after", timeout_seconds, "seconds. Task may still be processing."))
+        return(result)
+      }
+
+      if (elapsed < 60) {
+        poll_interval <- 1
+      } else if (elapsed < 120) {
+        poll_interval <- 2
+      } else if (elapsed < 180) {
+        poll_interval <- 3
+      } else {
+        poll_interval <- 5
+      }
+
+      Sys.sleep(poll_interval)
+
+      callback <- result$callback
+      if (!grepl("^https?://", callback)) {
+        callback_url <- paste0(host, callback, "?apiKey=", apikey)
+      } else {
+        callback_url <- paste0(callback, "?apiKey=", apikey)
+      }
+      poll_response <- httr::GET(callback_url, httr::config(ssl_verifypeer = 0L, ssl_verifyhost = 0L))
+      poll_content <- httr::content(poll_response, as="text", encoding="UTF-8")
+      result <- jsonlite::fromJSON(poll_content)
+
+      if (!is.null(result$complete) && result$complete) {
+        message("Task completed successfully!")
+        break
+      }
+
+      if (!is.null(result$message)) {
+        message(paste("Status:", result$message))
+      }
+    }
+  }
+
+  return(result)
+}
+
 
 #' Get Data Function
 #'
@@ -66,68 +123,35 @@ protobi_put_data <- function(df, projectid, tablekey, apikey, host="https://app.
 
   response <- httr::POST(uri, body=list(file=httr::upload_file(temp_path, "text/csv"), type=type, filename=filename), httr::config(ssl_verifypeer = 0L, ssl_verifyhost = 0L))
 
-  # Parse JSON response
   content <- httr::content(response, as="text", encoding="UTF-8")
   result <- jsonlite::fromJSON(content)
 
-  # If the task is not complete and has a callback, poll until completion or timeout
-  if (!is.null(result$complete) && !result$complete && !is.null(result$callback)) {
-    message("Task initiated. Polling for completion...")
-    start_time <- Sys.time()
+  result <- protobi_poll_task(result, host, apikey, timeout_seconds)
 
-    while (TRUE) {
-      # Check if timeout has been exceeded
-      elapsed <- as.numeric(difftime(Sys.time(), start_time, units="secs"))
-      if (elapsed > timeout_seconds) {
-        warning(paste("Timeout after", timeout_seconds, "seconds. Task may still be processing."))
-        return(result)
-      }
+  return(result)
+}
 
-      # Adaptive polling interval based on elapsed time
-      # 0-60s: poll every 1 second
-      # 60-120s: poll every 2 seconds
-      # 120-180s: poll every 3 seconds
-      # 180-300s: poll every 5 seconds
-      # 300+s: poll every 5 seconds
-      if (elapsed < 60) {
-        poll_interval <- 1
-      } else if (elapsed < 120) {
-        poll_interval <- 2
-      } else if (elapsed < 180) {
-        poll_interval <- 3
-      } else {
-        poll_interval <- 5
-      }
+#' Run Data Process Function
+#'
+#' This function executes a remote data process in Protobi
+#'
+#' @param projectid A character. Protobi project identifier.
+#' @param tablekey A character. The key of your Protobi data table.
+#' @param apikey A character. The APIKEY from your account profile, https://app.protobi.com/account.
+#' @param host URL, defaults to "https://app.protobi.com"
+#' @param timeout_seconds Maximum time in seconds to wait for async task completion, defaults to 300 (5 minutes)
+#' @return A list with elements: complete (boolean), result (data when complete=true), and possibly callback (url) or message (string) when complete=false
+#' @export
+protobi_run_process <- function(projectid, tablekey, apikey, host="https://app.protobi.com", timeout_seconds=300) {
+  uri <- paste0(host, "/api/v3/dataset/", projectid, "/data/", tablekey, "/run?apiKey=", apikey)
+  message(uri)
 
-      # Wait before polling
-      Sys.sleep(poll_interval)
+  response <- httr::PUT(uri, httr::config(ssl_verifypeer = 0L, ssl_verifyhost = 0L))
 
-      # Poll the callback URL
-      # Handle both absolute and relative callback URLs
-      callback <- result$callback
-      if (!grepl("^https?://", callback)) {
-        # Relative URL, prepend host
-        callback_url <- paste0(host, callback, "?apiKey=", apikey)
-      } else {
-        # Absolute URL
-        callback_url <- paste0(callback, "?apiKey=", apikey)
-      }
-      poll_response <- httr::GET(callback_url, httr::config(ssl_verifypeer = 0L, ssl_verifyhost = 0L))
-      poll_content <- httr::content(poll_response, as="text", encoding="UTF-8")
-      result <- jsonlite::fromJSON(poll_content)
+  content <- httr::content(response, as="text", encoding="UTF-8")
+  result <- jsonlite::fromJSON(content)
 
-      # Check if task is complete
-      if (!is.null(result$complete) && result$complete) {
-        message("Task completed successfully!")
-        break
-      }
-
-      # Show progress message if available
-      if (!is.null(result$message)) {
-        message(paste("Status:", result$message))
-      }
-    }
-  }
+  result <- protobi_poll_task(result, host, apikey, timeout_seconds)
 
   return(result)
 }
