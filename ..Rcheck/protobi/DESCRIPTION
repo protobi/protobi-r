@@ -1,7 +1,7 @@
 Package: protobi
 Type: Package
 Title: Protobi R Library
-Version: 1.7
+Version: 1.6
 Author: Ashwini Kumar, Pieter Sheth-Voss, Patrick Franco
 Maintainer: Protobi <support@protobi.com>
 Description: Utilities to get data and metadata from a Protobi project as an R Data Frame,
@@ -10,16 +10,7 @@ Description: Utilities to get data and metadata from a Protobi project as an R D
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
-Imports:
-  dplyr,
-  Hmisc,
-  httr,
-  jsonlite,
-  purrr,
-  stringr,
-  tibble,
-  utils
+Imports: dplyr, Hmisc, httr, jsonlite, purrr, stringr, tibble, utils
 RoxygenNote: 7.3.3
-Suggests:
-  testthat,
-  dotenv
+Suggests: testthat, dotenv
+Built: R 4.2.2; ; 2026-03-24 15:22:15 UTC; unix

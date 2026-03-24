@@ -1,0 +1,525 @@
+\nonstopmode{}
+\documentclass[a4paper]{book}
+\usepackage[times,inconsolata,hyper]{Rd}
+\usepackage{makeidx}
+\usepackage[utf8]{inputenc} % @SET ENCODING@
+% \usepackage{graphicx} % @USE GRAPHICX@
+\makeindex{}
+\begin{document}
+\chapter*{}
+\begin{center}
+{\textbf{\huge Package `protobi'}}
+\par\bigskip{\large \today}
+\end{center}
+\inputencoding{utf8}
+\ifthenelse{\boolean{Rd@use@hyper}}{\hypersetup{pdftitle = {protobi: Protobi R Library}}}{}
+\begin{description}
+\raggedright{}
+\item[Type]\AsIs{Package}
+\item[Title]\AsIs{Protobi R Library}
+\item[Version]\AsIs{1.6}
+\item[Author]\AsIs{Ashwini Kumar, Pieter Sheth-Voss, Patrick Franco}
+\item[Maintainer]\AsIs{Protobi }\email{support@protobi.com}\AsIs{}
+\item[Description]\AsIs{Utilities to get data and metadata from a Protobi project as an R Data Frame,
+apply variable labels as titles, apply value labels as factors, and send a new or revised R data frame to Protobi.
+Additional utilities to access/edit project properties, execute data processes, and get a project's data tables.}
+\item[License]\AsIs{MIT + file LICENSE}
+\item[Encoding]\AsIs{UTF-8}
+\item[LazyData]\AsIs{true}
+\item[Imports]\AsIs{dplyr, Hmisc, httr, jsonlite, purrr, stringr, tibble, utils}
+\item[RoxygenNote]\AsIs{7.3.3}
+\item[Suggests]\AsIs{testthat, dotenv}
+\end{description}
+\Rdcontents{\R{} topics documented:}
+\inputencoding{utf8}
+\HeaderA{protobi\_apply\_formats}{Apply Formats Function}{protobi.Rul.apply.Rul.formats}
+\keyword{protobi}{protobi\_apply\_formats}
+%
+\begin{Description}\relax
+Given the data and format, this function replaces the values in the dataframe column with the format metadata values.
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+protobi_apply_formats(df, formats)
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{df}] A data.frame.
+
+\item[\code{formats}] A list with format metadata as returned by protobi\_get\_formats.
+\end{ldescription}
+\end{Arguments}
+%
+\begin{Value}
+The df with levels adjusted according to formats.
+\end{Value}
+\inputencoding{utf8}
+\HeaderA{protobi\_apply\_meta}{Internal helper function used to apply metadata to df}{protobi.Rul.apply.Rul.meta}
+%
+\begin{Description}\relax
+Given df, metadata and updating function return df with updated columns
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+protobi_apply_meta(df, metadata, updater)
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{df}] A data.frame.
+
+\item[\code{metadata}] A list.
+
+\item[\code{updater}] A function that takes a column name and returns corresponding data with attached metadata.
+\end{ldescription}
+\end{Arguments}
+%
+\begin{Value}
+df with metadata attached.
+\end{Value}
+\inputencoding{utf8}
+\HeaderA{protobi\_apply\_titles}{Apply Titles Function}{protobi.Rul.apply.Rul.titles}
+\keyword{protobi}{protobi\_apply\_titles}
+%
+\begin{Description}\relax
+Given the data and titles, this function assigns the title (label) metadata to the R dataframe columns.
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+protobi_apply_titles(df, titles)
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{df}] A data.frame.
+
+\item[\code{titles}] A list with title metadata as returned from protobi\_get\_titles
+\end{ldescription}
+\end{Arguments}
+%
+\begin{Value}
+df with metadata attached.
+\end{Value}
+\inputencoding{utf8}
+\HeaderA{protobi\_execute}{Execute process}{protobi.Rul.execute}
+%
+\begin{Description}\relax
+protobi\_execute() executes a Protobi executable process.
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+protobi_execute(projectid, apikey, execkey, host = "https://app.protobi.com")
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{projectid}] A character. Protobi project identifier.
+
+\item[\code{apikey}] A character. The APIKEY from your account profile, https://app.protobi.com/account.
+
+\item[\code{execkey}] A character. The key of your Protobi executable process.
+
+\item[\code{host}] URL, defaults to "https://app.protobi.com"
+\end{ldescription}
+\end{Arguments}
+%
+\begin{Value}
+An httr response object
+\end{Value}
+\inputencoding{utf8}
+\HeaderA{protobi\_get\_data}{Get Data Function}{protobi.Rul.get.Rul.data}
+\keyword{protobi}{protobi\_get\_data}
+%
+\begin{Description}\relax
+This function returns an R data frame representing the data in Protobi based on the parameters provided.
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+protobi_get_data(
+  projectid,
+  tablekey,
+  apikey,
+  host = "https://app.protobi.com",
+  formats = FALSE,
+  titles = FALSE
+)
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{projectid}] A character. Protobi project identifier.
+
+\item[\code{tablekey}] A character. The key of your Protobi data table.
+
+\item[\code{apikey}] A character. The APIKEY from your account profile, https://app.protobi.com/account.
+
+\item[\code{host}] Application host, default is https://app.protobi.com, or use https://rtanalytics.sermo.com for SERMO
+
+\item[\code{formats}] Optionally download and apply value formats as factors
+
+\item[\code{titles}] Optionally download and apply variable labels as column titles
+\end{ldescription}
+\end{Arguments}
+\inputencoding{utf8}
+\HeaderA{protobi\_get\_formats}{Get Formats Function}{protobi.Rul.get.Rul.formats}
+\keyword{protobi}{protobi\_get\_formats}
+%
+\begin{Description}\relax
+This function returns an R List representing the Format metadata in Protobi based on the parameters provided.
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+protobi_get_formats(projectid, apikey, host)
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{projectid}] A character. Protobi project identifier.
+
+\item[\code{apikey}] A character. e APIKEY from your account profile, https://app.protobi.com/account.
+\end{ldescription}
+\end{Arguments}
+%
+\begin{Value}
+A list representing format metadata.
+\end{Value}
+\inputencoding{utf8}
+\HeaderA{protobi\_get\_properties}{Get properties}{protobi.Rul.get.Rul.properties}
+%
+\begin{Description}\relax
+protobi\_get\_properties() dynamically gets all supplied properties from Protobi.
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+protobi_get_properties(
+  projectid,
+  apikey,
+  execkey,
+  propertykey = NULL,
+  host = "https://app.protobi.com"
+)
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{projectid}] A character. Protobi project identifier.
+
+\item[\code{apikey}] A character. The APIKEY from your account profile, https://app.protobi.com/account.
+
+\item[\code{execkey}] A character. The key of your Protobi executable process.
+
+\item[\code{propertykey}] A character. Accepts valid (not blank, NULL, or NA) non-nested lists, vectors, or character values of property key(s). If not supplied, returns all properties.
+
+\item[\code{host}] URL, defaults to "https://app.protobi.com"
+\end{ldescription}
+\end{Arguments}
+%
+\begin{Value}
+An R list or character value object. Type dependent on properties requested.
+\end{Value}
+%
+\begin{SeeAlso}\relax
+[protobi\_put\_properties()]
+\end{SeeAlso}
+\inputencoding{utf8}
+\HeaderA{protobi\_get\_table\_details}{Get data table details}{protobi.Rul.get.Rul.table.Rul.details}
+%
+\begin{Description}\relax
+protobi\_get\_table\_details() returns details of all data tables associated with a Protobi project's schema (default) or primary-table.
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+protobi_get_table_details(
+  projectid,
+  apikey,
+  scopekey = "schema",
+  host = "https://v4.protobi.com",
+  only_names = FALSE,
+  prune = NULL
+)
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{projectid}] A character. Protobi project identifier.
+
+\item[\code{apikey}] A character. The APIKEY from your account profile, https://app.protobi.com/account.
+
+\item[\code{scopekey}] A character. Defaults to "schema", can also be "primary". Gathers either all schema-table names or all primary-table names.
+
+\item[\code{host}] URL, defaults to "https://v4.protobi.com"
+
+\item[\code{only\_names}] TRUE/FALSE, defaults to FALSE. Use TRUE to return only data table names. Optionally use 'prune' in tandem to filter result.
+
+\item[\code{prune}] Optional stringr-formatted pattern. Pattern match data table names to remove from result. only\_names must be TRUE to use.
+\end{ldescription}
+\end{Arguments}
+%
+\begin{Value}
+An R data frame
+\end{Value}
+\inputencoding{utf8}
+\HeaderA{protobi\_get\_titles}{Get Titles Function}{protobi.Rul.get.Rul.titles}
+\keyword{protobi}{protobi\_get\_titles}
+%
+\begin{Description}\relax
+This function returns an R List representing the Titles metadata in Protobi based on the parameters provided.
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+protobi_get_titles(projectid, apikey, host)
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{projectid}] A character. Protobi project identifier.
+
+\item[\code{apikey}] A character. e APIKEY from your account profile, https://app.protobi.com/account.
+\end{ldescription}
+\end{Arguments}
+%
+\begin{Value}
+A list representing titles metadata
+\end{Value}
+\inputencoding{utf8}
+\HeaderA{protobi\_get\_url}{Get properties directly via URL as an R object}{protobi.Rul.get.Rul.url}
+\keyword{protobi}{protobi\_get\_url}
+%
+\begin{Description}\relax
+protobi\_get\_url() returns a json-translated R object based on a user-supplied URL.
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+protobi_get_url(url)
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{url}] A character. URL location of requested properties.
+\end{ldescription}
+\end{Arguments}
+%
+\begin{Value}
+An R list or character value object. Type dependent on properties requested.
+\end{Value}
+%
+\begin{SeeAlso}\relax
+[protobi\_put\_url()]
+\end{SeeAlso}
+\inputencoding{utf8}
+\HeaderA{protobi\_poll\_task}{Poll Task Helper Function}{protobi.Rul.poll.Rul.task}
+%
+\begin{Description}\relax
+Internal helper function to poll a task manager callback until completion or timeout
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+protobi_poll_task(result, host, apikey, timeout_seconds)
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{result}] Initial result object from API call with complete, callback, and message fields
+
+\item[\code{host}] URL of the Protobi host
+
+\item[\code{apikey}] API key for authentication
+
+\item[\code{timeout\_seconds}] Maximum time in seconds to wait for task completion
+\end{ldescription}
+\end{Arguments}
+%
+\begin{Value}
+Final result object when complete or timed out
+\end{Value}
+\inputencoding{utf8}
+\HeaderA{protobi\_put\_data}{Upload Data Function}{protobi.Rul.put.Rul.data}
+%
+\begin{Description}\relax
+This function uploads data.frame content to Protobi
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+protobi_put_data(
+  df,
+  projectid,
+  tablekey,
+  apikey,
+  host = "https://app.protobi.com",
+  type = "data",
+  filename = "data.csv",
+  timeout_seconds = 300
+)
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{df}] A data.frame to uploaded to Protobi.
+
+\item[\code{projectid}] A character. Protobi project identifier.
+
+\item[\code{tablekey}] A character. The key of your Protobi data table.
+
+\item[\code{apikey}] A character. The APIKEY from your account profile, https://app.protobi.com/account.
+
+\item[\code{host}] URL, defaults to "https://app.protobi.com"
+
+\item[\code{type}] Type of data, defaults to "data"
+
+\item[\code{filename}] Optional name of file, defaults to "data.csv"
+
+\item[\code{timeout\_seconds}] Maximum time in seconds to wait for async task completion, defaults to 300 (5 minutes)
+\end{ldescription}
+\end{Arguments}
+%
+\begin{Value}
+A list with elements: complete (boolean), result (url when complete=true), and possibly callback (url) or message (string) when complete=false
+\end{Value}
+\inputencoding{utf8}
+\HeaderA{protobi\_put\_properties}{Upload properties}{protobi.Rul.put.Rul.properties}
+%
+\begin{Description}\relax
+protobi\_put\_properties() dynamically uploads all supplied properties (as list key.value pairs) to Protobi.
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+protobi_put_properties(
+  projectid,
+  apikey,
+  execkey,
+  propertykeyvalue,
+  host = "https://app.protobi.com"
+)
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{projectid}] A character. Protobi project identifier.
+
+\item[\code{apikey}] A character. The APIKEY from your account profile, https://app.protobi.com/account.
+
+\item[\code{execkey}] A character. The key of your Protobi executable process.
+
+\item[\code{propertykeyvalue}] A character. Accepts valid (not blank, NULL, or NA) non-nested named lists of property key.value pair(s).
+
+\item[\code{host}] URL, defaults to "https://app.protobi.com"
+\end{ldescription}
+\end{Arguments}
+%
+\begin{Value}
+An httr response object
+\end{Value}
+%
+\begin{SeeAlso}\relax
+[protobi\_get\_properties()]
+\end{SeeAlso}
+\inputencoding{utf8}
+\HeaderA{protobi\_put\_url}{Upload properties directly via URL}{protobi.Rul.put.Rul.url}
+\keyword{protobi}{protobi\_put\_url}
+%
+\begin{Description}\relax
+protobi\_put\_url() uploads a key.value pair based on a user-supplied URL.
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+protobi_put_url(url)
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{url}] A character. URL location of requested properties.
+\end{ldescription}
+\end{Arguments}
+%
+\begin{Value}
+An httr response object
+\end{Value}
+%
+\begin{SeeAlso}\relax
+[protobi\_get\_url()]
+\end{SeeAlso}
+\inputencoding{utf8}
+\HeaderA{protobi\_read\_csv\_gzip}{Utility to read zipped CSV from URL}{protobi.Rul.read.Rul.csv.Rul.gzip}
+%
+\begin{Description}\relax
+This function reads a CSV from a URL in GZip format and returns a data frame
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+protobi_read_csv_gzip(uri)
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{uri}] Address of CSV
+\end{ldescription}
+\end{Arguments}
+\inputencoding{utf8}
+\HeaderA{protobi\_run\_process}{Run Data Process Function}{protobi.Rul.run.Rul.process}
+%
+\begin{Description}\relax
+This function executes a remote data process in Protobi
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+protobi_run_process(
+  projectid,
+  tablekey,
+  apikey,
+  host = "https://app.protobi.com",
+  timeout_seconds = 300
+)
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{projectid}] A character. Protobi project identifier.
+
+\item[\code{tablekey}] A character. The key of your Protobi data table.
+
+\item[\code{apikey}] A character. The APIKEY from your account profile, https://app.protobi.com/account.
+
+\item[\code{host}] URL, defaults to "https://app.protobi.com"
+
+\item[\code{timeout\_seconds}] Maximum time in seconds to wait for async task completion, defaults to 300 (5 minutes)
+\end{ldescription}
+\end{Arguments}
+%
+\begin{Value}
+A list with elements: complete (boolean), result (data when complete=true), and possibly callback (url) or message (string) when complete=false
+\end{Value}
+\printindex{}
+\end{document}

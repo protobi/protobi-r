@@ -117,7 +117,7 @@ protobi_put_data <- function(df, projectid, tablekey, apikey, host="https://app.
   # Ensure that temporary data is removed after protobi_put_data exits
   on.exit(tryCatch(unlink(temp_path), error=function(e) {}))
 
-  utils::write.csv(df, temp_path, na="", row.names=TRUE)
+  utils::write.csv(df, temp_path, na="", row.names=FALSE)
   uri <- paste0(host, "/api/v3/dataset/", projectid, "/data/", tablekey, "?apiKey=", apikey)
   message(uri)
 
