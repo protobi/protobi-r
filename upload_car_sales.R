@@ -11,7 +11,7 @@ if (!require("jsonlite", quietly = TRUE)) stop("jsonlite package required")
 host <- "https://app.protobi.com"
 dataset_id <- "687e55b79d1c392e37009512"
 table_key <- "data_fall2026_20260309"
-api_key <- "bb8fb63e-b294-4b4e-9621-073d054d9dd4"
+api_key <- Sys.getenv("PROTOBI_TEST_API_KEY")
 
 # Create simple test data
 df <- data.frame(
@@ -32,7 +32,7 @@ temp_path <- tempfile()
 write.csv(df, temp_path, na="", row.names=TRUE)
 
 # Upload
-uri <- paste0(host, "/api/v3/dataset/", dataset_id, "/data/", table_key, "?apiKey=", api_key)
+uri <- paste0(host, "/api/v3/dataset/", dataset_id, "/data/", table_key)
 cat("POST to:", uri, "\n\n")
 
 response <- httr::POST(
@@ -42,6 +42,7 @@ response <- httr::POST(
     type = "data",
     filename = "data.csv"
   ),
+  httr::add_headers(`x-api-key` = api_key),
   httr::config(ssl_verifypeer = 0L, ssl_verifyhost = 0L)
 )
 

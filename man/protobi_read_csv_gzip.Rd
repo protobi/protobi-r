@@ -4,10 +4,12 @@
 \alias{protobi_read_csv_gzip}
 \title{Utility to read zipped CSV from URL}
 \usage{
-protobi_read_csv_gzip(uri)
+protobi_read_csv_gzip(uri, apikey = NULL)
 }
 \arguments{
 \item{uri}{Address of CSV}
+
+\item{apikey}{Optional API key. When supplied the request is made with httr using the x-api-key header}
 }
 \description{
 This function reads a CSV from a URL in GZip format and returns a data frame

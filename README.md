@@ -32,6 +32,7 @@ library(protobi)
 * Get the TABLEKEY from the key of your Protobi data table
 * Get the APIKEY from your account profile, https://app.protobi.com/account
 
+Your API key is sent to Protobi in the `x-api-key` request header. Usage is unchanged — pass `APIKEY` to the functions as shown below.
 
 
 ## Use

@@ -4,10 +4,12 @@
 \alias{protobi_get_url}
 \title{Get properties directly via URL as an R object}
 \usage{
-protobi_get_url(url)
+protobi_get_url(url, apikey = NULL)
 }
 \arguments{
 \item{url}{A character. URL location of requested properties.}
+
+\item{apikey}{A character. Optional API key sent via the x-api-key header.}
 }
 \value{
 An R list or character value object. Type dependent on properties requested.
