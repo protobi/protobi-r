@@ -1,14 +1,35 @@
 
+#' Build the Protobi authentication header
+#'
+#' Internal helper returning the x-api-key header used to authenticate requests
+#'
+#' @param apikey API key for authentication
+#' @return An httr add_headers object carrying the x-api-key header
+protobi_auth_header <- function(apikey) {
+  if (is.null(apikey)) {
+    header <- httr::add_headers()
+  } else {
+    header <- httr::add_headers(`x-api-key` = apikey)
+  }
+  header
+}
+
 #' Utility to read zipped CSV from URL
 #'
 #' This function reads a CSV from a URL in GZip format and returns a data frame
 #' @param uri   Address of CSV
+#' @param apikey  Optional API key. When supplied the request is made with httr using the x-api-key header
 #' @export
-protobi_read_csv_gzip <- function(uri) {
-  con <- gzcon(url(uri))
+protobi_read_csv_gzip <- function(uri, apikey=NULL) {
+  if (is.null(apikey)) {
+    con <- gzcon(url(uri))
+  } else {
+    resp <- httr::GET(uri, protobi_auth_header(apikey), httr::config(ssl_verifypeer = 0L, ssl_verifyhost = 0L))
+    con <- gzcon(rawConnection(httr::content(resp, as="raw")))
+  }
   txt <- readLines(con, warn=FALSE)
   tcn <- textConnection(txt)
-  return(read.csv(tcn))
+  read.csv(tcn)
 }
 
 #' Poll Task Helper Function
@@ -46,11 +67,11 @@ protobi_poll_task <- function(result, host, apikey, timeout_seconds) {
 
       callback <- result$callback
       if (!grepl("^https?://", callback)) {
-        callback_url <- paste0(host, callback, "?apiKey=", apikey)
+        callback_url <- paste0(host, callback)
       } else {
-        callback_url <- paste0(callback, "?apiKey=", apikey)
+        callback_url <- callback
       }
-      poll_response <- httr::GET(callback_url, httr::config(ssl_verifypeer = 0L, ssl_verifyhost = 0L))
+      poll_response <- httr::GET(callback_url, protobi_auth_header(apikey), httr::config(ssl_verifypeer = 0L, ssl_verifyhost = 0L))
       poll_content <- httr::content(poll_response, as="text", encoding="UTF-8")
       result <- jsonlite::fromJSON(poll_content)
 
@@ -83,9 +104,9 @@ protobi_poll_task <- function(result, host, apikey, timeout_seconds) {
 #' @export
 protobi_get_data <- function(projectid, tablekey, apikey, host="https://app.protobi.com", formats=FALSE, titles=FALSE) {
 
-  uri <- paste0(host, "/api/v3/dataset/", projectid, "/data/", tablekey, "/csv?apiKey=", apikey)
+  uri <- paste0(host, "/api/v3/dataset/", projectid, "/data/", tablekey, "/csv")
   message(uri)
-  df <- protobi_read_csv_gzip(uri)
+  df <- protobi_read_csv_gzip(uri, apikey)
   httr::set_config(httr::config(ssl_verifypeer = 0L))
 
   if(formats) {
@@ -118,10 +139,10 @@ protobi_put_data <- function(df, projectid, tablekey, apikey, host="https://app.
   on.exit(tryCatch(unlink(temp_path), error=function(e) {}))
 
   utils::write.csv(df, temp_path, na="", row.names=FALSE)
-  uri <- paste0(host, "/api/v3/dataset/", projectid, "/data/", tablekey, "?apiKey=", apikey)
+  uri <- paste0(host, "/api/v3/dataset/", projectid, "/data/", tablekey)
   message(uri)
 
-  response <- httr::POST(uri, body=list(file=httr::upload_file(temp_path, "text/csv"), type=type, filename=filename), httr::config(ssl_verifypeer = 0L, ssl_verifyhost = 0L))
+  response <- httr::POST(uri, body=list(file=httr::upload_file(temp_path, "text/csv"), type=type, filename=filename), protobi_auth_header(apikey), httr::config(ssl_verifypeer = 0L, ssl_verifyhost = 0L))
 
   content <- httr::content(response, as="text", encoding="UTF-8")
   result <- jsonlite::fromJSON(content)
@@ -143,10 +164,10 @@ protobi_put_data <- function(df, projectid, tablekey, apikey, host="https://app.
 #' @return A list with elements: complete (boolean), result (data when complete=true), and possibly callback (url) or message (string) when complete=false
 #' @export
 protobi_run_process <- function(projectid, tablekey, apikey, host="https://app.protobi.com", timeout_seconds=300) {
-  uri <- paste0(host, "/api/v3/dataset/", projectid, "/data/", tablekey, "/run?apiKey=", apikey)
+  uri <- paste0(host, "/api/v3/dataset/", projectid, "/data/", tablekey, "/run")
   message(uri)
 
-  response <- httr::PUT(uri, httr::config(ssl_verifypeer = 0L, ssl_verifyhost = 0L))
+  response <- httr::PUT(uri, protobi_auth_header(apikey), httr::config(ssl_verifypeer = 0L, ssl_verifyhost = 0L))
 
   content <- httr::content(response, as="text", encoding="UTF-8")
   result <- jsonlite::fromJSON(content)
@@ -166,9 +187,10 @@ protobi_run_process <- function(projectid, tablekey, apikey, host="https://app.p
 #' @keywords protobi
 #' @export
 protobi_get_formats <- function(projectid, apikey, host) {
-  uri <- paste0(host, "/api/v3/dataset/", projectid,"/formats?apiKey=", apikey)
+  uri <- paste0(host, "/api/v3/dataset/", projectid,"/formats")
   message(uri)
-  jsonlite::fromJSON(uri)
+  resp <- httr::GET(uri, protobi_auth_header(apikey), httr::config(ssl_verifypeer = 0L, ssl_verifyhost = 0L))
+  jsonlite::fromJSON(httr::content(resp, as="text", encoding="UTF-8"))
 }
 
 #' Get Titles Function
@@ -181,9 +203,10 @@ protobi_get_formats <- function(projectid, apikey, host) {
 #' @keywords protobi
 #' @export
 protobi_get_titles <- function(projectid,  apikey, host) {
-  uri <- paste0(host, "/api/v3/dataset/", projectid, "/titles?apiKey=", apikey)
+  uri <- paste0(host, "/api/v3/dataset/", projectid, "/titles")
   message(uri)
-  jsonlite::fromJSON(uri)
+  resp <- httr::GET(uri, protobi_auth_header(apikey), httr::config(ssl_verifypeer = 0L, ssl_verifyhost = 0L))
+  jsonlite::fromJSON(httr::content(resp, as="text", encoding="UTF-8"))
 }
 
 
@@ -253,13 +276,14 @@ protobi_apply_titles <- function(df, titles) {
 #' protobi_get_url() returns a json-translated R object based on a user-supplied URL.
 #'
 #' @param url A character. URL location of requested properties.
+#' @param apikey A character. Optional API key sent via the x-api-key header.
 #' @keywords protobi
 #' @seealso [protobi_put_url()]
 #' @return An R list or character value object. Type dependent on properties requested.
 #' @export
-protobi_get_url <- function(url) {
+protobi_get_url <- function(url, apikey=NULL) {
 
-  resp <- httr::GET(url)
+  resp <- httr::GET(url, protobi_auth_header(apikey))
 
   httr::stop_for_status(resp, task = resp$url)
   if (!httr::has_content(resp)) {warning(paste("requested content is empty:", resp$url))}
@@ -277,15 +301,16 @@ protobi_get_url <- function(url) {
 #' protobi_put_url() uploads a key.value pair based on a user-supplied URL.
 #'
 #' @param url A character. URL location of requested properties.
+#' @param apikey A character. Optional API key sent via the x-api-key header.
 #' @keywords protobi
 #' @seealso [protobi_get_url()]
 #' @return An httr response object
 #' @export
-protobi_put_url <- function(url) {
+protobi_put_url <- function(url, apikey=NULL) {
 
   url_encoded <- utils::URLencode(url, reserved = FALSE, repeated = FALSE)
 
-  resp <- httr::PUT(url_encoded)
+  resp <- httr::PUT(url_encoded, protobi_auth_header(apikey))
 
   httr::stop_for_status(resp, task = resp$url)
 
@@ -309,10 +334,10 @@ protobi_get_properties <- function(projectid, apikey, execkey, propertykey = NUL
 
   if (is.null(propertykey)) {
 
-    url <- paste0(host, "/api/v3/dataset/", projectid, "/data/", execkey, "/properties", "?apiKey=", apikey)
+    url <- paste0(host, "/api/v3/dataset/", projectid, "/data/", execkey, "/properties")
     message(url)
     message("returning all properties")
-    obj <- protobi_get_url(url)
+    obj <- protobi_get_url(url, apikey)
 
   }
 
@@ -324,13 +349,13 @@ protobi_get_properties <- function(projectid, apikey, execkey, propertykey = NUL
     ls <- as.list(propertykey)
     names(ls) <- propertykey
 
-    root <- paste0(host, "/api/v3/dataset/", projectid, "/data/", execkey, "/properties", "?apiKey=", apikey, "&key=")
+    root <- paste0(host, "/api/v3/dataset/", projectid, "/data/", execkey, "/properties", "?key=")
     dest <- paste(names(ls), "", sep=" ")
     message(root)
     message(dest)
 
     ls <- purrr::map(ls, function(x) paste0(root, x))
-    obj <- purrr::map(ls, function(x) protobi_get_url(x))
+    obj <- purrr::map(ls, function(x) protobi_get_url(x, apikey))
     obj <- purrr::list_flatten(obj, name_spec = "{outer}.{inner}")
 
   }
@@ -360,14 +385,14 @@ protobi_put_properties <- function(projectid, apikey, execkey, propertykeyvalue,
   if(purrr::some(propertykeyvalue, function(x) x == "" | is.null(x) | is.na(x))) {stop("'propertykeyvalue' cannot have blank, NULL, or NA values")}
   if(purrr::some(names(propertykeyvalue), function(x) x == "")) {stop("all 'propertykeyvalue' values must have an accompanying non-blank name")}
 
-  root <- paste0(host, "/api/v3/dataset/", projectid, "/data/", execkey, "/properties", "?apiKey=", apikey, "&key=")
+  root <- paste0(host, "/api/v3/dataset/", projectid, "/data/", execkey, "/properties", "?key=")
   dest <- paste(names(propertykeyvalue), "", sep=" ")
   message(root)
   message(dest)
 
   ls <- purrr::lmap(propertykeyvalue, function(x) list(paste0(root, names(x), "&value=", x)))
 
-  purrr::map(ls, function(x) protobi_put_url(x))
+  purrr::map(ls, function(x) protobi_put_url(x, apikey))
 
 }
 
@@ -383,10 +408,10 @@ protobi_put_properties <- function(projectid, apikey, execkey, propertykeyvalue,
 #' @export
 protobi_execute <- function(projectid, apikey, execkey, host = "https://app.protobi.com") {
 
-  url <- paste0(host, "/api/v3/dataset/", projectid, "/data/", execkey, "/run", "?apiKey=", apikey)
+  url <- paste0(host, "/api/v3/dataset/", projectid, "/data/", execkey, "/run")
   message(url)
 
-  resp <- httr::PUT(url)
+  resp <- httr::PUT(url, protobi_auth_header(apikey))
   httr::stop_for_status(resp, task = resp$url)
 
   return(resp)
@@ -417,11 +442,11 @@ protobi_get_table_details <- function(projectid, apikey, scopekey = "schema", ho
       cat("switching host to https://app.protobi.com; v3 to access", scopekey, fill = TRUE)
     }
 
-    url <- paste0(host, "/api/v3/", "dataset", "/", projectid, "/tables", "?apiKey=", apikey)
+    url <- paste0(host, "/api/v3/", "dataset", "/", projectid, "/tables")
     message(url)
     cat("returning current tables in primaryTable", fill = TRUE)
     if (only_names) {cat(paste0("returning only table names; pruned: '", prune, "'"), fill = TRUE)}
-    obj <- protobi_get_url(url)
+    obj <- protobi_get_url(url, apikey)
     obj <- dplyr::rename(obj, table_name = key)
 
     if (only_names) {
@@ -437,12 +462,12 @@ protobi_get_table_details <- function(projectid, apikey, scopekey = "schema", ho
       cat("switching host to https://v4.protobi.com; v4 to access", scopekey, fill = TRUE)
     }
 
-    url <- paste0(host, "/api/v4/", "project", "/", projectid, "/tables", "?apiKey=", apikey)
+    url <- paste0(host, "/api/v4/", "project", "/", projectid, "/tables")
     message(url)
     cat("returning all tables in schema", fill = TRUE)
     if (only_names) {cat(paste0("returning only table names; pruned: '", prune, "'"), fill = TRUE)}
 
-    obj <- protobi_get_url(url)$rows
+    obj <- protobi_get_url(url, apikey)$rows
     obj <- dplyr::filter(obj, !stringr::str_detect(table_name, "_keys$|_rejects$"))
 
     if (only_names) {

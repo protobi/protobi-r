@@ -21,7 +21,7 @@ source("R/protobi.R")
 host <- "https://app.protobi.com"
 dataset_id <- "687e55b79d1c392e37009512"
 table_key <- "car_sales"
-api_key <- "bb8fb63e-b294-4b4e-9621-073d054d9dd4"
+api_key <- Sys.getenv("PROTOBI_TEST_API_KEY")
 
 # Load the SAV file
 sav_path <- "~/Exp/protobi-demo/public/data/sav/car_sales.sav"

@@ -4,10 +4,12 @@
 \alias{protobi_put_url}
 \title{Upload properties directly via URL}
 \usage{
-protobi_put_url(url)
+protobi_put_url(url, apikey = NULL)
 }
 \arguments{
 \item{url}{A character. URL location of requested properties.}
+
+\item{apikey}{A character. Optional API key sent via the x-api-key header.}
 }
 \value{
 An httr response object
